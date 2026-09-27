@@ -1,0 +1,16 @@
+{
+  "name": "LESABAANGO BEAST",
+  "short_name": "BEAST",
+  "description": "Lester Bango | Ford Mustang GT Edition",
+  "start_url": "/Lester-Bango-beast-/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#FF0000",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3774/3774083.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
