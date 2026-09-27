@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BANGO V9 | Football + Daily Lotto</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#070b12;
+    color:#ffffff;
+}
+
+header{
+    text-align:center;
+    padding:25px 15px;
+    background:linear-gradient(135deg,#111827,#020617);
+    border-bottom:1px solid #273244;
+}
+
+header h1{
+    margin:0;
+    font-size:32px;
+}
+
+header p{
+    color:#94a3b8;
+    margin:8px 0 15px;
+}
+
+.status{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.status span{
+    background:#182231;
+    padding:8px 12px;
+    border-radius:20px;
+    font-size:12px;
+}
+
+.green{
+    color:#4ade80;
+}
+
+.yellow{
+    color:#facc15;
+}
+
+.red{
+    color:#f87171;
+}
+
+nav{
+    display:flex;
+    overflow-x:auto;
+    background:#0c111b;
+    border-bottom:1px solid #273244;
+}
+
+nav button{
+    flex:1;
+    min-width:120px;
+    padding:16px 10px;
+    border:0;
+    background:none;
+    color:#94a3b8;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+nav button.active{
+    color:white;
+    background:#1d2939;
+}
+
+main{
+    max-width:1200px;
+    margin:auto;
+    padding:15px;
+}
+
+.section{
+    display:none;
+}
+
+.section.active{
+    display:block;
+}
+
+.title{
+    margin:10px 0 16px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:15px;
+}
+
+.card{
+    background:#111827;
+    border:1px solid #273449;
+    border-radius:15px;
+    padding:17px;
+    margin-bottom:15px;
+}
+
+.card h3{
+    margin-top:0;
+}
+
+.league{
+    color:#94a3b8;
+    font-size:12px;
+}
+
+.match-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
+}
+
+.live{
+    color:#f87171;
+    font-weight:bold;
+}
+
+.time{
+    color:#facc15;
+    font-weight:bold;
+}
+
+.teams{
+    font-size:18px;
+    font-weight:bold;
+    line-height:2;
+}
+
+.score{
+    float:right;
+    font-size:25px;
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    padding:7px 0;
+    color:#cbd5e1;
+}
+
+.prediction{
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid #273449;
+}
+
+.signal{
+    margin-top:13px;
+    padding:11px;
+    border-radius:10px;
+    background:#10251a;
+    color:#4ade80;
+    text-align:center;
+    font-weight:bold;
+}
+
+.value{
+    margin-top:10px;
+    padding:10px;
+    border-radius:10px;
+    background:#29200c;
+    color:#facc15;
+}
+
+.action{
+    width:100%;
+    padding:13px;
+    margin-top:12px;
+    border:0;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.action:hover{
+    background:#1d4ed8;
+}
+
+.note{
+    background:#131d2b;
+    border-left:4px solid #2563eb;
+    padding:13px;
+    border-radius:8px;
+    color:#cbd5e1;
+    line-height:1.5;
+    margin-bottom:15px;
+}
+
+.lotto{
+    text-align:center;
+}
+
+.ball{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    background:#2563eb;
+    margin:5px;
+    font-weight:bold;
+    font-size:16px;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:18px;
+}
+
+.stat{
+    background:#0a1019;
+    border:1px solid #273449;
+    padding:13px;
+    border-radius:10px;
+    color:#94a3b8;
+}
+
+.stat strong{
+    display:block;
+    color:white;
+    font-size:21px;
+    margin-top:5px;
+}
+
+.pick{
+    margin-top:18px;
+    padding:15px;
+    background:#0b111b;
+    border-radius:10px;
+    border:1px solid #273449;
+}
+
+.empty{
+    text-align:center;
+    color:#94a3b8;
+    padding:30px;
+}
+
+footer{
+    text-align:center;
+    padding:30px 15px;
+    color:#64748b;
+    font-size:12px;
+}
+
+@media(max-width:600px){
+
+    header h1{
+        font-size:25px;
+    }
+
+    main{
+        padding:12px;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>🔥 BANGO V9</h1>
+
+<p>Football Intelligence + Daily Lotto</p>
+
+<div class="status">
+
+<span>
+⚽ Football
+<b class="green">● READY</b>
+</span>
+
+<span>
+🎯 Daily Lotto
+<b class="green">● READY</b>
+</span>
+
+<span>
+🧠 BANGO V9
+<b class="green">● ACTIVE</b>
+</span>
+
+</div>
+
+</header>
+
+
+<nav>
+
+<button class="active" onclick="openTab('football',this)">
+⚽ FOOTBALL
+</button>
+
+<button onclick="openTab('live',this)">
+🔴 LIVE
+</button>
+
+<button onclick="openTab('lotto',this)">
+🎯 DAILY LOTTO
+</button>
+
+<button onclick="openTab('analysis',this)">
+📊 ANALYSIS
+</button>
+
+</nav>
+
+
+<main>
+
+
+<!-- FOOTBALL -->
+
+<section id="football" class="section active">
+
+<h2 class="title">⚽ Today's Football</h2>
+
+<div class="note">
+
+BANGO V9 analyses football matches using form,
+goals, home/away performance and probability.
+
+</div>
+
+<div id="footballList" class="grid"></div>
+
+</section>
+
+
+
+<!-- LIVE -->
+
+<section id="live" class="section">
+
+<h2 class="title">🔴 Live Matches</h2>
+
+<div class="note">
+
+Live matches appear here when live football data is connected.
+
+</div>
+
+<div id="liveList" class="grid"></div>
+
+</section>
+
+
+
+<!-- LOTTO -->
+
+<section id="lotto" class="section">
+
+<h2 class="title">🎯 Daily Lotto BANGO V9</h2>
+
+<div class="note">
+
+Daily Lotto uses historical results for statistical analysis.
+The generator does not guarantee future winning numbers.
+
+</div>
+
+
+<div class="card lotto">
+
+<h3>Latest Draw</h3>
+
+<div id="latestDraw"></div>
+
+<div class="stats">
+
+<div class="stat">
+
+Historical Draws
+
+<strong id="drawCount">0</strong>
+
+</div>
+
+<div class="stat">
+
+Hot Number
+
+<strong id="hotNumber">-</strong>
+
+</div>
+
+<div class="stat">
+
+Cold Number
+
+<strong id="coldNumber">-</strong>
+
+</div>
+
+</div>
+
+
+<button class="action" onclick="generateLotto()">
+
+🧠 GENERATE BANGO V9 PICKS
+
+</button>
+
+
+<div id="lottoPicks"></div>
+
+</div>
+
+</section>
+
+
+
+<!-- ANALYSIS -->
+
+<section id="analysis" class="section">
+
+<h2 class="title">📊 BANGO V9 Analysis</h2>
+
+
+<div class="grid">
+
+
+<div class="card">
+
+<h3>⚽ Football Engine</h3>
+
+<div class="row">
+
+<span>Matches</span>
+
+<b id="footballCount">0</b>
+
+</div>
+
+<div class="row">
+
+<span>Live</span>
+
+<b id="liveCount">0</b>
+
+</div>
+
+<div class="row">
+
+<span>Prediction Model</span>
+
+<b class="green">ACTIVE</b>
+
+</div>
+
+<div class="row">
+
+<span>Odds Analysis</span>
+
+<b class="yellow">READY</b>
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<h3>🎯 Lotto Engine</h3>
+
+<div class="row">
+
+<span>Historical Draws</span>
+
+<b id="lottoCount">0</b>
+
+</div>
+
+<div class="row">
+
+<span>Frequency</span>
+
+<b class="green">ACTIVE</b>
+
+</div>
+
+<div class="row">
+
+<span>Hot / Cold</span>
+
+<b class="green">ACTIVE</b>
+
+</div>
+
+<div class="row">
+
+<span>Backtesting</span>
+
+<b class="yellow">READY</b>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<br>
+
+
+<div class="card">
+
+<h3>🔄 System Status</h3>
+
+<p id="statusText">
+
+BANGO V9 loaded successfully.
+
+</p>
+
+</div>
+
+
+</section>
+
+
+</main>
+
+
+<footer>
+
+BANGO V9 © 2026<br>
+
+Football statistics + Daily Lotto analysis
+
+</footer>
+
+
+
+<script>
+
+
+/* =====================================================
+   FOOTBALL DATA
+   =====================================================
+
+   THIS IS DEMO DATA.
+
+   Later we replace it with the real live football feed.
+*/
+
+
+const footballMatches = [
+
+{
+
+league:"Premier League",
+
+time:"15:00",
+
+home:"Manchester City",
+
+away:"Arsenal",
+
+homeWin:48,
+
+draw:27,
+
+awayWin:25,
+
+over15:82,
+
+over25:63,
+
+btts:61
+
+},
+
+{
+
+league:"La Liga",
+
+time:"17:30",
+
+home:"Barcelona",
+
+away:"Real Madrid",
+
+homeWin:43,
+
+draw:25,
+
+awayWin:32,
+
+over15:88,
+
+over25:71,
+
+btts:69
+
+},
+
+{
+
+league:"Serie A",
+
+time:"20:00",
+
+home:"Inter Milan",
+
+away:"AC Milan",
+
+homeWin:51,
+
+draw:27,
+
+awayWin:22,
+
+over15:79,
+
+over25:55,
+
+btts:52
+
+}
+
+];
+
+
+
+/* =====================================================
+   LIVE DEMO DATA
+===================================================== */
+
+
+const liveMatches = [
+
+{
+
+league:"Live Match",
+
+minute:63,
+
+home:"Team A",
+
+away:"Team B",
+
+homeScore:1,
+
+awayScore:0,
+
+homeWin:68,
+
+draw:21,
+
+awayWin:11,
+
+over15:81,
+
+over25:54,
+
+btts:47
+
+}
+
+];
+
+
+
+/* =====================================================
+   DAILY LOTTO HISTORY
+=====================================================
+
+   Replace this array with your real Daily Lotto
+   historical data.
+*/
+
+
+const lottoHistory = [
+
+[1,7,14,25,33],
+
+[3,9,16,22,35],
+
+[5,11,18,27,31],
+
+[2,8,15,24,36],
+
+[4,10,17,23,30],
+
+[6,12,19,26,34],
+
+[1,9,13,28,32],
+
+[3,7,20,25,35],
+
+[5,11,16,22,31],
+
+[2,8,18,27,36],
+
+[4,10,14,23,33],
+
+[6,12,17,24,30]
+
+];
+
+
+
+/* =====================================================
+   TAB SYSTEM
+===================================================== */
+
+
+function openTab(id,button){
+
+document
+.querySelectorAll(".section")
+.forEach(section=>{
+section.classList.remove("active");
+});
+
+document
+.getElementById(id)
+.classList.add("active");
+
+
+document
+.querySelectorAll("nav button")
+.forEach(btn=>{
+btn.classList.remove("active");
+});
+
+button.classList.add("active");
+
+}
+
+
+
+/* =====================================================
+   FOOTBALL RENDER
+===================================================== */
+
+
+function renderFootball(){
+
+const container=
+document.getElementById("footballList");
+
+
+container.innerHTML=
+footballMatches.map(match=>{
+
+let signal="DRAW";
+
+let confidence=match.draw;
+
+
+if(match.homeWin>match.draw &&
+match.homeWin>match.awayWin){
+
+signal="HOME WIN";
+
+confidence=match.homeWin;
+
+}
+
+
+if(match.awayWin>match.homeWin &&
+match.awayWin>match.draw){
+
+signal="AWAY WIN";
+
+confidence=match.awayWin;
+
+}
+
+
+return `
+
+<div class="card">
+
+<div class="match-top">
+
+<span class="league">
+${match.league}
+</span>
+
+<span class="time">
+🕒 ${match.time}
+</span>
+
+</div>
+
+
+<div class="teams">
+
+${match.home}
+
+<br>
+
+${match.away}
+
+</div>
+
+
+<div class="prediction">
+
+<div class="row">
+
+<span>🏠 Home</span>
+
+<b>${match.homeWin}%</b>
+
+</div>
+
+
+<div class="row">
+
+<span>🤝 Draw</span>
+
+<b>${match.draw}%</b>
+
+</div>
+
+
+<div class="row">
+
+<span>✈️ Away</span>
+
+<b>${match.awayWin}%</b>
+
+</div>
+
+
+<div class="row">
+
+<span>⚽ Over 1.5</span>
+
+<b>${match.over15}%</b>
+
+</div>
+
+
+<div class="row">
+
+<span>⚽ Over 2.5</span>
+
+<b>${match.over25}%</b>
+
+</div>
+
+
+<div class="row">
+
+<span>🔥 BTTS</span>
+
+<b>${match.btts}%</b>
+
+</div>
+
+</div>
+
+
+<div class="signal">
+
+MODEL SIGNAL
+
+<br>
+
+${signal}
+
+<br>
+
+Confidence: ${confidence}%
+
+</div>
+
+
+</div>
+
+`;
+
+}).join("");
+
+
+}
+
+
+
+/* =====================================================
+   LIVE FOOTBALL RENDER
+===================================================== */
+
+
+function renderLive(){
+
+const container=
+document.getElementById("liveList");
+
+
+container.innerHTML=
+liveMatches.map(match=>`
+
+<div class="card">
+
+<div class="match-top">
+
+<span class="league">
+
+${match.league}
+
+</span>
+
+<span class="live">
+
+🔴 ${match.minute}' LIVE
+
+</span>
+
+</div>
+
+
+<div class="teams">
+
+${match.home}
+
+<span class="score">
+
+${match.homeScore}
+
+</span>
+
+<br>
+
+
+${match.away}
+
+<span class="score">
+
+${match.awayScore}
+
+</span>
+
+</div>
+
+
+<div class="prediction">
+
+<div class="row">
+
+<span>Home Win</span>
+
+<b>${match.homeWin}%</b>
+
+</div>
+
+
+<div class="row">
+
+<span>Draw</span>
+
+<b>${match.draw}%</b>
+
+</div>
+
+
+<div class="row">
+
+<span>Away Win</span>
+
+<b>${match.awayWin}%</b>
+
+</div>
+
+
+<div class="row">
+
+<span>Over 1.5</span>
+
+<b>${match.over15}%</b>
+
+</div>
+
+
+<div class="row">
+
+<span>Over 2.5</span>
+
+<b>${match.over25}%</b>
+
+</div>
+
+
+<div class="row">
+
+<span>BTTS</span>
+
+<b>${match.btts}%</b>
+
+</div>
+
+</div>
+
+
+<div class="signal">
+
+🔴 LIVE MODEL
+
+<br>
+
+HOME WIN
+
+<br>
+
+Confidence: ${match.homeWin}%
+
+</div>
+
+
+</div>
+
+`).join("");
+
+}
+
+
+
+/* =====================================================
+   LOTTO FREQUENCY
+===================================================== */
+
+
+function calculateFrequency(){
+
+const frequency={};
+
+
+for(let i=1;i<=36;i++){
+
+frequency[i]=0;
+
+}
+
+
+lottoHistory.forEach(draw=>{
+
+draw.forEach(number=>{
+
+frequency[number]++;
+
+});
+
+});
+
+
+return frequency;
+
+}
+
+
+
+/* =====================================================
+   LOTTO DISPLAY
+===================================================== */
+
+
+function renderLotto(){
+
+if(!lottoHistory.length)
+return;
+
+
+const latest=lottoHistory[0];
+
+
+document.getElementById("latestDraw")
+.innerHTML=
+
+latest.map(number=>
+
+`<span class="ball">${number}</span>`
+
+).join("");
+
+
+const frequency=
+calculateFrequency();
+
+
+const numbers=
+Object.keys(frequency)
+.map(Number);
+
+
+numbers.sort((a,b)=>
+frequency[b]-frequency[a]
+);
+
+
+document.getElementById("drawCount")
+.textContent=
+lottoHistory.length;
+
+
+document.getElementById("hotNumber")
+.textContent=
+numbers[0];
+
+
+document.getElementById("coldNumber")
+.textContent=
+numbers[numbers.length-1];
+
+}
+
+
+
+/* =====================================================
+   BANGO V9 LOTTO GENERATOR
+===================================================== */
+
+
+function generateLotto(){
+
+const frequency=
+calculateFrequency();
+
+
+let weighted=[];
+
+
+for(let number=1;number<=36;number++){
+
+const weight=
+1+frequency[number];
+
+
+for(let i=0;i<weight;i++){
+
+weighted.push(number);
+
+}
+
+}
+
+
+function makeCombination(){
+
+const result=[];
+
+
+while(result.length<5){
+
+const randomIndex=
+Math.floor(
+Math.random()*weighted.length
+);
+
+
+const number=
+weighted[randomIndex];
+
+
+if(!result.includes(number)){
+
+result.push(number);
+
+}
+
+}
+
+
+return result.sort(
+(a,b)=>a-b
+);
+
+}
+
+
+let html="";
+
+
+for(let i=1;i<=5;i++){
+
+const combination=
+makeCombination();
+
+
+html+=`
+
+<div class="pick">
+
+<b>Combination ${i}</b>
+
+<br>
+
+${combination.map(number=>
+
+`<span class="ball">${number}</span>`
+
+).join("")}
+
+</div>
+
+`;
+
+}
+
+
+document.getElementById("lottoPicks")
+.innerHTML=html;
+
+}
+
+
+
+/* =====================================================
+   SYSTEM STATUS
+===================================================== */
+
+
+function updateStatus(){
+
+document.getElementById("footballCount")
+.textContent=
+footballMatches.length;
+
+
+document.getElementById("liveCount")
+.textContent=
+liveMatches.length;
+
+
+document.getElementById("lottoCount")
+.textContent=
+lottoHistory.length;
+
+
+document.getElementById("statusText")
+.textContent=
+"BANGO V9 active • Last update: "+
+new Date().toLocaleString();
+
+}
+
+
+
+/* =====================================================
+   START SYSTEM
+===================================================== */
+
+
+renderFootball();
+
+renderLive();
+
+renderLotto();
+
+updateStatus();
+
+
+
+/*
+   Refresh display every 60 seconds.
+*/
+
+setInterval(()=>{
+
+renderFootball();
+
+renderLive();
+
+renderLotto();
+
+updateStatus();
+
+},60000);
+
+
+</script>
+
+</body>
+</html>
