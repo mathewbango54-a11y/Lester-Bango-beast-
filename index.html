@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BANGO V31</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#070707;
+ color:#fff;
+ font-family:Arial,Helvetica,sans-serif;
+ padding:12px;
+}
+h1{
+ text-align:center;
+ color:#00ff80;
+ font-size:38px;
+ margin:10px 0 4px;
+}
+.subtitle{
+ text-align:center;
+ color:#aaa;
+ font-size:15px;
+ line-height:1.4;
+ margin-bottom:15px;
+}
+.stats{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:10px;
+}
+.stat{
+ background:#111;
+ border:1px solid #292929;
+ border-radius:17px;
+ padding:16px 8px;
+ text-align:center;
+}
+.stat b{
+ display:block;
+ color:#00ff80;
+ font-size:27px;
+}
+.stat span{
+ color:#aaa;
+ font-size:13px;
+}
+.controls{
+ display:flex;
+ gap:10px;
+ margin:16px 0;
+}
+button,select{
+ border:1px solid #333;
+ background:#111;
+ color:white;
+ padding:14px;
+ border-radius:12px;
+ font-size:15px;
+}
+button{
+ flex:1;
+ background:#00b85c;
+ border-color:#00ff80;
+}
+select{
+ flex:0 0 42%;
+}
+.notice{
+ background:#111;
+ border-left:5px solid #00ff80;
+ padding:14px;
+ border-radius:12px;
+ color:#ddd;
+ margin-bottom:18px;
+}
+.section{
+ color:#00ff80;
+ font-size:23px;
+ margin:20px 5px 10px;
+}
+.card{
+ background:#111;
+ border:1px solid #292929;
+ border-radius:18px;
+ margin:12px 0;
+ overflow:hidden;
+}
+.card.live{
+ border:2px solid #e33;
+}
+.top{
+ padding:10px 13px;
+ background:#151515;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+.badge{
+ padding:6px 10px;
+ border-radius:8px;
+ background:#333;
+ font-size:12px;
+}
+.livebadge{
+ background:#d00000;
+}
+.body{
+ padding:15px;
+}
+.teams{
+ display:grid;
+ grid-template-columns:1fr 90px 1fr;
+ align-items:center;
+ text-align:center;
+ gap:8px;
+}
+.team{
+ font-size:17px;
+ font-weight:bold;
+}
+.form{
+ color:#999;
+ font-size:12px;
+ margin-top:5px;
+}
+.score{
+ font-size:29px;
+ color:#00ff80;
+ font-weight:bold;
+}
+.time{
+ color:#aaa;
+ font-size:12px;
+}
+.model-title{
+ color:#aaa;
+ margin:18px 0 8px;
+}
+.grid3{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:7px;
+}
+.pick{
+ background:#171717;
+ border-radius:11px;
+ padding:10px 4px;
+ text-align:center;
+}
+.pick strong{
+ display:block;
+ color:#00ff80;
+ font-size:21px;
+}
+.pick span{
+ color:#aaa;
+ font-size:11px;
+}
+.markets{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:8px;
+ margin-top:10px;
+}
+.market{
+ background:#171717;
+ border-radius:11px;
+ padding:12px 8px;
+ text-align:center;
+ border:1px solid #252525;
+}
+.market .percent{
+ color:#00ff80;
+ font-size:22px;
+ font-weight:bold;
+}
+.market .name{
+ font-size:12px;
+ color:#aaa;
+ margin-top:3px;
+}
+.market .status{
+ font-size:11px;
+ color:#ddd;
+ margin-top:5px;
+}
+.quality{
+ margin-top:13px;
+ padding:12px;
+ background:#0c0c0c;
+ border-radius:11px;
+}
+.qualitybar{
+ height:8px;
+ background:#292929;
+ border-radius:10px;
+ overflow:hidden;
+ margin-top:7px;
+}
+.qualityfill{
+ height:100%;
+ background:#00ff80;
+}
+.confidence{
+ margin-top:10px;
+ font-size:14px;
+}
+.low{color:#ffb000}
+.medium{color:#00d9ff}
+.high{color:#00ff80}
+.skip{
+ margin-top:10px;
+ color:#ff6262;
+ font-weight:bold;
+}
+.good{
+ color:#00ff80;
+ font-weight:bold;
+}
+.muted{
+ color:#777;
+}
+.empty{
+ padding:30px;
+ text-align:center;
+ color:#777;
+}
+.footer{
+ text-align:center;
+ color:#555;
+ font-size:11px;
+ padding:30px 5px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>⚽ BANGO V31</h1>
+
+<div class="subtitle">
+REAL FIXTURES • RECENT FORM • 1X2 • OVER 1.5 GOALS
+<br>
+OVER 1.5 CORNERS • BTTS • LIVE MATCHES
+</div>
+
+<div class="stats">
+ <div class="stat">
+  <b id="qualifying">0</b>
+  <span>QUALIFYING</span>
+ </div>
+
+ <div class="stat">
+  <b id="upcoming">0</b>
+  <span>UPCOMING</span>
+ </div>
+
+ <div class="stat">
+  <b id="live">0</b>
+  <span>LIVE</span>
+ </div>
+
+ <div class="stat">
+  <b id="updated">--:--</b>
+  <span>UPDATED</span>
+ </div>
+</div>
+
+<div class="controls">
+ <button onclick="loadEverything()">🔄 REFRESH REAL DATA</button>
+
+ <select id="filter" onchange="render()">
+  <option value="all">All Matches</option>
+  <option value="live">Live</option>
+  <option value="upcoming">Upcoming</option>
+  <option value="strong">Strong Signals</option>
+  <option value="goals">Over 1.5 Goals</option>
+  <option value="corners">Over 1.5 Corners</option>
+  <option value="btts">BTTS</option>
+ </select>
+</div>
+
+<div class="notice" id="notice">
+⏳ Loading real football data...
+</div>
+
+<div id="app"></div>
+
+<div class="footer">
+BANGO V31 • Statistical model • No prediction is guaranteed
+</div>
+
+<script>
+
+/* ============================================================
+   BANGO V31
+   ============================================================ */
+
+const ESPN =
+"https://site.api.espn.com/apis/site/v2/sports/soccer/all/scoreboard";
+
+const SPORTSDB =
+"https://www.thesportsdb.com/api/v1/json/123/";
+
+let matches = [];
+let teamDB = {};
+
+const DAYS_BACK = 10;
+const DAYS_FORWARD = 2;
+
+/* ------------------------------------------------------------
+   HELPERS
+------------------------------------------------------------ */
+
+function esc(x){
+ return String(x ?? "")
+ .replace(/&/g,"&amp;")
+ .replace(/</g,"&lt;")
+ .replace(/>/g,"&gt;")
+ .replace(/"/g,"&quot;");
+}
+
+function pct(x){
+ if(!Number.isFinite(x)) return "--";
+ return Math.max(0,Math.min(100,Math.round(x)))+"%";
+}
+
+function clamp(x,a,b){
+ return Math.max(a,Math.min(b,x));
+}
+
+function avg(arr){
+ const a=arr.filter(Number.isFinite);
+ return a.length ? a.reduce((x,y)=>x+y,0)/a.length : null;
+}
+
+function sigmoid(x){
+ return 1/(1+Math.exp(-x));
+}
+
+function poisson(lambda,k){
+ if(lambda<=0) return 0;
+ let p=Math.exp(-lambda);
+ for(let i=1;i<=k;i++) p*=lambda/i;
+ return p;
+}
+
+/* ------------------------------------------------------------
+   ESPN FIXTURES
+------------------------------------------------------------ */
+
+async function fetchESPN(date){
+
+ try{
+
+  const url=ESPN+"?dates="+date;
+
+  const r=await fetch(url,{cache:"no-store"});
+
+  if(!r.ok) return [];
+
+  const data=await r.json();
+
+  const out=[];
+
+  for(const event of (data.events||[])){
+
+   const comp=event.competitions?.[0];
+   if(!comp) continue;
+
+   const home=comp.competitors?.find(x=>x.homeAway==="home");
+   const away=comp.competitors?.find(x=>x.homeAway==="away");
+
+   if(!home||!away) continue;
+
+   const state=event.status?.type?.state || "";
+
+   let status="upcoming";
+
+   if(state==="in") status="live";
+   else if(state==="post") status="finished";
+
+   const league=
+    event.league?.name ||
+    event.competition?.name ||
+    "Football";
+
+   const kickoff=event.date;
+
+   const hs=Number(home.score||0);
+   const as=Number(away.score||0);
+
+   out.push({
+    id:String(event.id),
+    league,
+    home:home.team?.displayName||home.team?.name||"Home",
+    away:away.team?.displayName||away.team?.name||"Away",
+    homeId:String(home.team?.id||""),
+    awayId:String(away.team?.id||""),
+    homeScore:hs,
+    awayScore:as,
+    kickoff,
+    status,
+    minute:event.status?.displayClock||"",
+    homeLogo:home.team?.logo||"",
+    awayLogo:away.team?.logo||""
+   });
+
+  }
+
+  return out;
+
+ }catch(e){
+  console.log("ESPN error",e);
+  return [];
+ }
+}
+
+/* ------------------------------------------------------------
+   LOAD FIXTURES
+------------------------------------------------------------ */
+
+async function loadFixtures(){
+
+ const today=new Date();
+
+ const jobs=[];
+
+ for(let i=-DAYS_BACK;i<=DAYS_FORWARD;i++){
+
+  const d=new Date(today);
+
+  d.setDate(d.getDate()+i);
+
+  const ds=d.toISOString().slice(0,10);
+
+  jobs.push(fetchESPN(ds));
+ }
+
+ const all=await Promise.all(jobs);
+
+ const map=new Map();
+
+ for(const arr of all){
+
+  for(const m of arr){
+
+   if(m.status==="finished") continue;
+
+   map.set(m.id,m);
+  }
+ }
+
+ return [...map.values()]
+ .sort((a,b)=>new Date(a.kickoff)-new Date(b.kickoff));
+
+}
+
+/* ------------------------------------------------------------
+   HISTORICAL TEAM DATA
+------------------------------------------------------------ */
+
+function createTeam(){
+
+ return {
+  matches:0,
+  wins:0,
+  draws:0,
+  losses:0,
+  gf:[],
+  ga:[],
+  homeMatches:0,
+  awayMatches:0,
+  homeGF:[],
+  homeGA:[],
+  awayGF:[],
+  awayGA:[],
+  btts:[],
+  over15:[],
+  corners:[],
+  cornerOver15:[]
+ };
+}
+
+function ensureTeam(name){
+
+ if(!teamDB[name])
+  teamDB[name]=createTeam();
+
+ return teamDB[name];
+}
+
+/* ------------------------------------------------------------
+   STORE RESULT
+------------------------------------------------------------ */
+
+function addResult(home,away,hg,ag,corners=null){
+
+ const H=ensureTeam(home);
+ const A=ensureTeam(away);
+
+ H.matches++;
+ A.matches++;
+
+ H.gf.push(hg);
+ H.ga.push(ag);
+
+ A.gf.push(ag);
+ A.ga.push(hg);
+
+ H.homeMatches++;
+ A.awayMatches++;
+
+ H.homeGF.push(hg);
+ H.homeGA.push(ag);
+
+ A.awayGF.push(ag);
+ A.awayGA.push(hg);
+
+ if(hg>ag){
+  H.wins++;
+  A.losses++;
+ }else if(hg<ag){
+  A.wins++;
+  H.losses++;
+ }else{
+  H.draws++;
+  A.draws++;
+ }
+
+ const btts=(hg>0&&ag>0);
+
+ H.btts.push(btts?1:0);
+ A.btts.push(btts?1:0);
+
+ const over15=((hg+ag)>=2);
+
+ H.over15.push(over15?1:0);
+ A.over15.push(over15?1:0);
+
+ if(Number.isFinite(corners)){
+
+  H.corners.push(corners);
+  A.corners.push(corners);
+
+  H.cornerOver15.push(corners>=2?1:0);
+  A.cornerOver15.push(corners>=2?1:0);
+ }
+}
+
+/* ------------------------------------------------------------
+   SPORTSDB HISTORY
+------------------------------------------------------------ */
+
+async function fetchTeamHistory(teamName){
+
+ try{
+
+  const searchURL=
+   SPORTSDB+
+   "searchteams.php?t="+
+   encodeURIComponent(teamName);
+
+  const sr=await fetch(searchURL);
+
+  if(!sr.ok) return;
+
+  const sd=await sr.json();
+
+  const team=sd.teams?.[0];
+
+  if(!team?.idTeam) return;
+
+  const id=team.idTeam;
+
+  const url=
+   SPORTSDB+
+   "eventslast.php?id="+id;
+
+  const r=await fetch(url);
+
+  if(!r.ok) return;
+
+  const data=await r.json();
+
+  for(const ev of (data.results||[])){
+
+   if(!ev.intHomeScore || !ev.intAwayScore)
+    continue;
+
+   const hg=Number(ev.intHomeScore);
+   const ag=Number(ev.intAwayScore);
+
+   if(!Number.isFinite(hg)||!Number.isFinite(ag))
+    continue;
+
+   let corners=null;
+
+   /*
+      Different data providers expose corners
+      under different fields. Try several common
+      names before declaring unavailable.
+   */
+
+   const possible=[
+    ev.intCorners,
+    ev.intHomeCorners,
+    ev.intAwayCorners,
+    ev.strCorners
+   ];
+
+   for(const c of possible){
+
+    if(c===undefined||c===null) continue;
+
+    const n=parseFloat(
+      String(c).replace(/[^0-9.]/g,"")
+    );
+
+    if(Number.isFinite(n)){
+      corners=n;
+      break;
+    }
+   }
+
+   addResult(
+    ev.strHomeTeam,
+    ev.strAwayTeam,
+    hg,
+    ag,
+    corners
+   );
+  }
+
+ }catch(e){
+  console.log("History error",teamName,e);
+ }
+}
+
+/* ------------------------------------------------------------
+   LOAD HISTORY
+------------------------------------------------------------ */
+
+async function buildHistory(fixtures){
+
+ teamDB={};
+
+ const names=new Set();
+
+ fixtures.forEach(m=>{
+  names.add(m.home);
+  names.add(m.away);
+ });
+
+ /*
+   Limit simultaneous requests.
+   This prevents hammering the public endpoint.
+ */
+
+ const arr=[...names];
+
+ for(let i=0;i<arr.length;i+=5){
+
+  const batch=arr.slice(i,i+5);
+
+  await Promise.all(
+   batch.map(x=>fetchTeamHistory(x))
+  );
+ }
+}
+
+/* ------------------------------------------------------------
+   TEAM STATS
+------------------------------------------------------------ */
+
+function teamStats(name,venue){
+
+ const t=teamDB[name];
+
+ if(!t) return null;
+
+ const gf=
+  venue==="home" ? avg(t.homeGF) :
+  venue==="away" ? avg(t.awayGF) :
+  avg(t.gf);
+
+ const ga=
+  venue==="home" ? avg(t.homeGA) :
+  venue==="away" ? avg(t.awayGA) :
+  avg(t.ga);
+
+ const btts=avg(t.btts);
+
+ const over15=avg(t.over15);
+
+ const corners=avg(t.corners);
+
+ const corner15=avg(t.cornerOver15);
+
+ const form=
+  t.matches
+  ? (t.wins*3+t.draws)/(t.matches*3)
+  : null;
+
+ return {
+  matches:t.matches,
+  gf,
+  ga,
+  btts,
+  over15,
+  corners,
+  corner15,
+  form
+ };
+}
+
+/* ------------------------------------------------------------
+   DATA QUALITY
+------------------------------------------------------------ */
+
+function dataQuality(H,A){
+
+ if(!H||!A) return 0;
+
+ const hm=H.matches||0;
+ const am=A.matches||0;
+
+ let q=0;
+
+ q+=clamp(hm*5,0,35);
+ q+=clamp(am*5,0,35);
+
+ if(H.gf!==null) q+=5;
+ if(A.gf!==null) q+=5;
+
+ if(H.ga!==null) q+=5;
+ if(A.ga!==null) q+=5;
+
+ return Math.round(clamp(q,0,100));
+}
+
+/* ------------------------------------------------------------
+   1X2 MODEL
+------------------------------------------------------------ */
+
+function model1X2(m){
+
+ const H=teamStats(m.home,"home");
+ const A=teamStats(m.away,"away");
+
+ const quality=dataQuality(H,A);
+
+ if(!H||!A||quality<30){
+
+  return {
+   home:null,
+   draw:null,
+   away:null,
+   quality,
+   confidence:"LOW",
+   status:"INSUFFICIENT DATA"
+  };
+ }
+
+ const hAttack=H.gf??1.1;
+ const aAttack=A.gf??1.0;
+
+ const hDefense=H.ga??1.1;
+ const aDefense=A.ga??1.1;
+
+ const homeXG=
+  clamp(
+   0.62*hAttack+
+   0.38*aDefense+
+   0.28,
+   0.15,
+   4
+  );
+
+ const awayXG=
+  clamp(
+   0.62*aAttack+
+   0.38*hDefense,
+   0.10,
+   4
+  );
+
+ let home=0;
+ let draw=0;
+ let away=0;
+
+ for(let i=0;i<=6;i++){
+
+  for(let j=0;j<=6;j++){
+
+   const p=
+    poisson(homeXG,i)*
+    poisson(awayXG,j);
+
+   if(i>j) home+=p;
+   else if(i===j) draw+=p;
+   else away+=p;
+  }
+ }
+
+ const total=home+draw+away;
+
+ home=home/total*100;
+ draw=draw/total*100;
+ away=away/total*100;
+
+ const max=Math.max(home,draw,away);
+
+ let confidence=
+  quality<55 ? "LOW" :
+  quality<75 ? "MEDIUM" :
+  "HIGH";
+
+ if(max<45) confidence="LOW";
+
+ return {
+  home,
+  draw,
+  away,
+  homeXG,
+  awayXG,
+  quality,
+  confidence,
+  status:"OK"
+ };
+}
+
+/* ------------------------------------------------------------
+   GOALS MODEL
+------------------------------------------------------------ */
+
+function goalsModel(m){
+
+ const H=teamStats(m.home,"home");
+ const A=teamStats(m.away,"away");
+
+ const quality=dataQuality(H,A);
+
+ if(!H||!A||quality<30){
+
+  return {
+   over15:null,
+   quality,
+   status:"INSUFFICIENT DATA"
+  };
+ }
+
+ const hg=H.gf??1.1;
+ const ag=A.gf??1.0;
+
+ const hga=H.ga??1.1;
+ const aga=A.ga??1.1;
+
+ const xg=
+  clamp(
+   (hg+ag+hga+aga)/2,
+   0.3,
+   5
+  );
+
+ const p0=poisson(xg,0);
+ const p1=poisson(xg,1);
+
+ const over15=(1-p0-p1)*100;
+
+ return {
+  over15,
+  xg,
+  quality,
+  status:"OK"
+ };
+}
+
+/* ------------------------------------------------------------
+   BTTS MODEL
+------------------------------------------------------------ */
+
+function bttsModel(m){
+
+ const H=teamStats(m.home,"home");
+ const A=teamStats(m.away,"away");
+
+ const quality=dataQuality(H,A);
+
+ if(!H||!A||quality<30){
+
+  return {
+   btts:null,
+   quality,
+   status:"INSUFFICIENT DATA"
+  };
+ }
+
+ const attackH=H.gf??1;
+ const attackA=A.gf??1;
+
+ const defenseH=H.ga??1;
+ const defenseA=A.ga??1;
+
+ const lambdaH=
+  clamp((attackH+defenseA)/2,0.1,4);
+
+ const lambdaA=
+  clamp((attackA+defenseH)/2,0.1,4);
+
+ const pH=1-Math.exp(-lambdaH);
+ const pA=1-Math.exp(-lambdaA);
+
+ const btts=pH*pA*100;
+
+ return {
+  btts,
+  quality,
+  status:"OK"
+ };
+}
+
+/* ------------------------------------------------------------
+   CORNER MODEL
+------------------------------------------------------------ */
+
+function cornersModel(m){
+
+ const H=teamStats(m.home,"home");
+ const A=teamStats(m.away,"away");
+
+ const quality=dataQuality(H,A);
+
+ if(!H||!A){
+
+  return {
+   over15:null,
+   average:null,
+   quality:0,
+   status:"INSUFFICIENT DATA"
+  };
+ }
+
+ /*
+   We only use actual corner history here.
+
+   If corner statistics are unavailable,
+   do NOT fabricate a high-confidence number.
+ */
+
+ if(
+   !Number.isFinite(H.corners) &&
+   !Number.isFinite(A.corners)
+ ){
+
+  return {
+   over15:null,
+   average:null,
+   quality,
+   status:"NO CORNER DATA"
+  };
+ }
+
+ const h=
+  Number.isFinite(H.corners)
+   ? H.corners : null;
+
+ const a=
+  Number.isFinite(A.corners)
+   ? A.corners : null;
+
+ const values=[h,a].filter(Number.isFinite);
+
+ const average=avg(values);
+
+ let p;
+
+ const hp=H.corner15;
+ const ap=A.corner15;
+
+ if(Number.isFinite(hp)&&Number.isFinite(ap)){
+
+  p=
+   clamp(
+    ((hp+ap)/2)*100,
+    1,
+    99
+   );
+
+ }else{
+
+  /*
+    Fallback from total corner average.
+    This remains deliberately conservative.
+  */
+
+  p=
+   clamp(
+    (1-Math.exp(-Math.max(0,average)*0.55))*100,
+    1,
+    99
+   );
+ }
+
+ return {
+  over15:p,
+  average,
+  quality,
+  status:"OK"
+ };
+}
+
+/* ------------------------------------------------------------
+   COMBINED MODEL
+------------------------------------------------------------ */
+
+function predict(m){
+
+ const one=model1X2(m);
+ const goals=goalsModel(m);
+ const btts=bttsModel(m);
+ const corners=cornersModel(m);
+
+ return {
+  one,
+  goals,
+  btts,
+  corners
+ };
+}
+
+/* ------------------------------------------------------------
+   DISPLAY
+------------------------------------------------------------ */
+
+function confidenceClass(c){
+
+ if(c==="HIGH") return "high";
+ if(c==="MEDIUM") return "medium";
+ return "low";
+}
+
+function marketHTML(title,value,status){
+
+ let valueText="--";
+ let statusText=status||"";
+
+ if(Number.isFinite(value)){
+  valueText=Math.round(value)+"%";
+
+  if(value>=70)
+   statusText="STRONG";
+
+  else if(value>=60)
+   statusText="WATCH";
+
+  else
+   statusText="WEAK";
+ }
+
+ return `
+ <div class="market">
+   <div class="percent">${valueText}</div>
+   <div class="name">${title}</div>
+   <div class="status">${statusText}</div>
+ </div>
+ `;
+}
+
+function footballCard(m){
+
+ const p=predict(m);
+
+ const one=p.one;
+
+ const confidence=one.confidence;
+
+ const live=m.status==="live";
+
+ let score=
+  live
+   ? `${m.homeScore} - ${m.awayScore}`
+   : "VS";
+
+ let time="";
+
+ if(m.kickoff){
+
+  const d=new Date(m.kickoff);
+
+  time=d.toLocaleString("en-ZA",{
+   timeZone:"Africa/Johannesburg",
+   day:"2-digit",
+   month:"short",
+   hour:"2-digit",
+   minute:"2-digit"
+  });
+ }
+
+ const q=one.quality||0;
+
+ return `
+ <div class="card ${live?"live":""}">
+
+  <div class="top">
+
+   <span>${esc(m.league)}</span>
+
+   <span class="badge ${live?"livebadge":""}">
+    ${live?"🔴 LIVE":"UPCOMING"}
+   </span>
+
+  </div>
+
+  <div class="body">
+
+   <div class="teams">
+
+    <div>
+     <div class="team">${esc(m.home)}</div>
+     <div class="form">
+      ${teamDB[m.home]?.matches||0} historical games
+     </div>
+    </div>
+
+    <div>
+     <div class="score">${score}</div>
+     <div class="time">
+      ${live?esc(m.minute):time}
+     </div>
+    </div>
+
+    <div>
+     <div class="team">${esc(m.away)}</div>
+     <div class="form">
+      ${teamDB[m.away]?.matches||0} historical games
+     </div>
+    </div>
+
+   </div>
+
+   <div class="model-title">
+    BANGO V31 1X2 MODEL
+   </div>
+
+   <div class="grid3">
+
+    <div class="pick">
+     <strong>
+      ${Number.isFinite(one.home)?pct(one.home):"--"}
+     </strong>
+     <span>HOME</span>
+    </div>
+
+    <div class="pick">
+     <strong>
+      ${Number.isFinite(one.draw)?pct(one.draw):"--"}
+     </strong>
+     <span>DRAW</span>
+    </div>
+
+    <div class="pick">
+     <strong>
+      ${Number.isFinite(one.away)?pct(one.away):"--"}
+     </strong>
+     <span>AWAY</span>
+    </div>
+
+   </div>
+
+   <div class="model-title">
+    🎯 GOALS / CORNERS / BTTS
+   </div>
+
+   <div class="markets">
+
+    ${marketHTML(
+     "OVER 1.5 GOALS",
+     p.goals.over15,
+     p.goals.status
+    )}
+
+    ${marketHTML(
+     "OVER 1.5 CORNERS",
+     p.corners.over15,
+     p.corners.status
+    )}
+
+    ${marketHTML(
+     "BTTS",
+     p.btts.btts,
+     p.btts.status
+    )}
+
+    ${marketHTML(
+     "EXPECTED GOALS",
+     Number.isFinite(p.goals.xg)
+      ? Math.min(99,p.goals.xg*20)
+      : null,
+     Number.isFinite(p.goals.xg)
+      ? p.goals.xg.toFixed(2)+" xG"
+      : "NO DATA"
+    )}
+
+   </div>
+
+   <div class="quality">
+
+    <div>
+     DATA QUALITY:
+     <strong>${q}/100</strong>
+    </div>
+
+    <div class="qualitybar">
+     <div
+      class="qualityfill"
+      style="width:${q}%">
+     </div>
+    </div>
+
+    <div class="confidence">
+     MODEL CONFIDENCE:
+     <strong class="${confidenceClass(confidence)}">
+      ${confidence}
+     </strong>
+    </div>
+
+    ${
+     q<30
+     ?
+     `<div class="skip">
+       ⚠️ NO BET — INSUFFICIENT DATA
+      </div>`
+     :
+     ""
+    }
+
+    ${
+     p.corners.status==="NO CORNER DATA"
+     ?
+     `<div class="muted" style="margin-top:7px">
+       🚩 Corner history unavailable — no fabricated signal.
+      </div>`
+     :
+     ""
+    }
+
+   </div>
+
+  </div>
+
+ </div>
+ `;
+}
+
+/* ------------------------------------------------------------
+   FILTER
+------------------------------------------------------------ */
+
+function render(){
+
+ const app=document.getElementById("app");
+
+ const filter=
+  document.getElementById("filter").value;
+
+ let list=[...matches];
+
+ if(filter==="live")
+  list=list.filter(x=>x.status==="live");
+
+ if(filter==="upcoming")
+  list=list.filter(x=>x.status==="upcoming");
+
+ if(filter==="strong"){
+
+  list=list.filter(x=>{
+
+   const p=predict(x);
+
+   return (
+    (p.one.home>=60)||
+    (p.one.draw>=60)||
+    (p.one.away>=60)||
+    (p.goals.over15>=70)||
+    (p.btts.btts>=70)||
+    (p.corners.over15>=70)
+   );
+  });
+ }
+
+ if(filter==="goals"){
+
+  list=list.filter(x=>
+   predict(x).goals.over15>=60
+  );
+ }
+
+ if(filter==="corners"){
+
+  list=list.filter(x=>
+   predict(x).corners.over15>=60
+  );
+ }
+
+ if(filter==="btts"){
+
+  list=list.filter(x=>
+   predict(x).btts.btts>=60
+  );
+ }
+
+ if(!list.length){
+
+  app.innerHTML=
+   `<div class="empty">
+     No matches meet this filter.
+    </div>`;
+
+  return;
+ }
+
+ const live=list.filter(x=>x.status==="live");
+
+ const upcoming=list.filter(x=>x.status==="upcoming");
+
+ let html="";
+
+ if(live.length){
+
+  html+=`
+   <div class="section">
+    🔥 LIVE MATCHES
+   </div>
+  `;
+
+  html+=live.map(footballCard).join("");
+ }
+
+ if(upcoming.length){
+
+  html+=`
+   <div class="section">
+    📅 UPCOMING MATCHES
+   </div>
+  `;
+
+  html+=upcoming.map(footballCard).join("");
+ }
+
+ app.innerHTML=html;
+}
+
+/* ------------------------------------------------------------
+   MAIN
+------------------------------------------------------------ */
+
+async function loadEverything(){
+
+ const notice=document.getElementById("notice");
+
+ notice.innerHTML=
+  "⏳ Scanning real fixtures and rebuilding the prediction database...";
+
+ try{
+
+  matches=await loadFixtures();
+
+  document.getElementById("qualifying").textContent=
+   matches.length;
+
+  document.getElementById("upcoming").textContent=
+   matches.filter(x=>x.status==="upcoming").length;
+
+  document.getElementById("live").textContent=
+   matches.filter(x=>x.status==="live").length;
+
+  /*
+    Build historical database.
+  */
+
+  await buildHistory(matches);
+
+  const usable=
+   Object.values(teamDB)
+   .filter(x=>x.matches>=3).length;
+
+  notice.innerHTML=
+   `✅ REAL FIXTURE SCAN COMPLETE.
+    Found <b>${matches.length}</b> live/upcoming matches.
+    Historical database contains
+    <b>${usable}</b> teams with usable form data.
+    Predictions now include
+    <b>1X2 + Over 1.5 Goals + Over 1.5 Corners + BTTS</b>.
+    Weak-data matches are marked NO BET.`;
+
+  document.getElementById("updated").textContent=
+   new Date().toLocaleTimeString("en-ZA",{
+    hour:"2-digit",
+    minute:"2-digit"
+   });
+
+  render();
+
+ }catch(e){
+
+  console.error(e);
+
+  notice.innerHTML=
+   "❌ Data refresh failed. Try REFRESH REAL DATA again.";
+ }
+}
+
+/* ------------------------------------------------------------
+   AUTO REFRESH
+------------------------------------------------------------ */
+
+loadEverything();
+
+setInterval(
+ loadEverything,
+ 5*60*1000
+);
+
+</script>
+
+</body>
+  </html>
