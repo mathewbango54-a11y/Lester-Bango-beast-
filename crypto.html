@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>👑 LESTER BANGO V3.6 NO VPN</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#000;color:#eee;font-family:Arial;padding:10px}
+.header{background:linear-gradient(135deg,#332a00,#000);border:2px solid #ffcc00;border-radius:14px;padding:14px;text-align:center;margin-bottom:8px}
+.header h1{color:#ffcc00;margin:0;font-size:26px;letter-spacing:2px;text-shadow:0 0 10px #ffcc00}
+.livebox{background:linear-gradient(135deg,rgba(0,200,100,0.15),#000);border:2px solid #00ff88;border-radius:12px;padding:10px;margin-bottom:10px}
+.moneybox{background:linear-gradient(135deg,rgba(255,204,0,0.15),#000);border:2px solid #ffcc00;border-radius:12px;padding:12px;margin-bottom:10px}
+.investrow{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin:6px 0}
+.investrow input,.investrow select{background:#000;color:#ffcc00;border:1px solid #ffcc00;border-radius:8px;padding:8px;min-width:85px;text-align:center;font-weight:bold;font-size:11px}
+button{background:#111;color:#ffcc00;border:1px solid #ffcc00;border-radius:6px;padding:7px 11px;font-size:9px;font-weight:bold;cursor:pointer}
+#coins{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:10px}
+.card{background:#111;border:1px solid #333;border-radius:12px;padding:10px;position:relative}
+.card.strong{border-color:#ffcc00;box-shadow:0 0 12px rgba(255,204,0,0.3)}
+.wm{position:absolute;bottom:2px;right:6px;font-size:7px;color:rgba(255,204,0,0.35);font-weight:bold}
+.price{color:#00ff88;font-weight:bold;font-size:12px}
+.profit{background:linear-gradient(135deg,#002a10,#001a08);border:1px solid #00aa44;border-radius:8px;padding:7px;margin-top:7px;text-align:center;font-size:11px}
+.profit.loss{background:#2a0000;border-color:#aa0000}
+.tag{position:absolute;top:-7px;right:8px;font-size:7px;font-weight:bold;padding:2px 7px;border-radius:10px}
+.tagBest{background:#ffcc00;color:#000}.tagFomo{background:#ff6600;color:#fff}
+.statsgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:8px}
+.statbox{background:#111;border:1px solid #332a00;border-radius:7px;padding:7px;text-align:center}.statbox b{display:block;color:#ffcc00;font-size:13px}.statbox span{font-size:6px;color:#aaa}
+</style></head><body>
+<div class="header"><h1>👑 LESTER BANGO</h1><div style="color:#fff;font-weight:bold;font-size:13px">💰 MONEY CREATOR V3.6 NO-VPN</div><div style="color:#ffcc88;font-size:8px">LESTER BANGO LEGACY EMPIRE • 5 PROXY FIX • JOHANNESBURG SA</div></div>
+<div class="livebox"><span style="color:#00ff88;font-weight:bold;font-size:11px">🟢 LIVE VALR: <span id="apiStatus">V3.6 No-VPN - Trying 5 proxies for Lester Bango...</span></span><span style="float:right;color:#ffcc00;font-size:8px;font-weight:bold">👑 V3.6 NO VPN</span><div id="liveReport" style="font-size:8px;color:#ccc;margin-top:6px">Trying direct + 4 proxies to bypass MTN/Vodacom block...</div></div>
+<div class="moneybox"><div style="color:#ffcc00;font-weight:bold;font-size:12px;text-align:center">👑 LESTER BANGO • R50 MONEY CREATOR</div>
+<div class="investrow"><span style="color:#ffcc88">Lester's R</span><input id="investAmt" type="number" value="50" min="10" step="10" oninput="render()"><button onclick="setInvest(50)" style="background:#ffcc00;color:#000">R50</button><button onclick="setInvest(100)">R100</button><button onclick="setInvest(500)">R500</button><select id="feeSelect" onchange="render()"><option value="0.005">VALR 0.5%</option><option value="0.01" selected>Luno 1%</option></select></div>
+<div class="investrow"><select id="valrTab" onchange="render()"><option value="ALL" selected>VALR: All Live</option><option value="Popular">Popular</option><option value="Gainers">Gainers</option><option value="Losers">Losers</option></select><select id="riskFilter" onchange="render()"><option value="ALL">All</option><option value="LOW" selected>LOW RISK ✅</option></select><select id="sortBox" onchange="render()"><option value="MONEY">💰 Money Score</option><option value="GAIN">🚀 Gainer</option></select></div>
+<div id="moneyStats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px"></div></div>
+<div class="statsgrid"><div class="statbox"><b id="totalCount">0</b><span>LIVE COINS</span></div><div class="statbox"><b id="strongBuy">0</b><span>MAKERS</span></div><div class="statbox"><b id="avoidCount">0</b><span>AVOID</span></div><div class="statbox"><b id="livePrice">-</b><span>BTC ZAR</span></div></div>
+<div id="coins"></div>
+<div style="text-align:center;margin-top:15px;padding:12px;background:#111;border:2px solid #ffcc00;border-radius:12px"><div style="color:#ffcc00;font-weight:bold">👑 LESTER BANGO LEGACY EMPIRE 👑</div><div style="font-size:9px;color:#888">V3.6 No-VPN Fix • From R50 to Legacy</div></div>
+<script>
+const fallback=[{id:"btc",s:"BTC",p:1431174,c:0.21,tab:"Popular",m:2000000000000},{id:"sol",s:"SOL",p:2009,c:-1.27,tab:"Popular",m:80000000000},{id:"ada",s:"ADA",p:4.42,c:4.66,tab:"Gainers",m:15000000000},{id:"eth",s:"ETH",p:65000,c:1.2,tab:"Popular",m:500000000000},{id:"xrp",s:"XRP",p:8.5,c:2.1,tab:"Popular",m:40000000000},{id:"near",s:"NEAR",p:85.97,c:3.57,tab:"Popular",m:2000000000},{id:"rlc",s:"RLC",p:11.81,c:94.68,tab:"Gainers",m:80000000}];
+const proxies=[u=>`https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,u=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`];
+function setInvest(v){document.getElementById('investAmt').value=v;render();}
+function sigFor(x){let risk="LOW";let isFomo=false,isLoser=false;if(x.m<150000000)risk="HIGH";else if(x.m<600000000)risk="MEDIUM";if(x.c>25){risk="HIGH";isFomo=true;}if(x.c<-6){isLoser=true;risk="HIGH";}let score=0;let reasons=[];if(x.c>=3&&x.c<=12){score+=4;reasons.push("Gainer +"+x.c.toFixed(2)+"%");}else if(x.c>12){score-=2;reasons.push("FOMO");}else if(x.c>=-2&&x.c<=1){score+=2;reasons.push("Stable");}else if(x.c<=-4){score-=3;reasons.push("Loser");}let entry="WAIT";if(x.s==="SOL"&&x.c<0){entry="BUY NOW DIP 🔥";score+=3;}else if(x.s==="ADA"&&x.c>0&&x.c<6){entry="BUY NOW SAFE 🔥";score+=3;}else if(x.c>25){entry="WAIT FOMO";score-=3;}else if(x.c<-6){entry="AVOID";score-=3;}let money=score*2+(risk==="LOW"?3:0);if(isFomo)money-=6;if(isLoser)money-=5;let sig="WATCH",cls="";if(money>=6&&risk!=="HIGH"&&!isFomo){sig="STRONG BUY";cls="strong";}else if(isFomo){sig="AVOID FOMO";}else if(isLoser){sig="AVOID LOSER";}return {signal:sig,cls,score:money,change:x.c,mcap:x.m,risk,entry,reasons,sym:x.s,price:x.p,tab:x.tab};}
+let state=[],analyses={};
+function renderInstant(){
+ state=fallback.map(f=>({id:f.id,symbol:f.s,priceZar:f.p,change24:f.c,tab:f.tab,mcap:f.m}));
+ analyses={};state.forEach(c=>{analyses[c.id]=sigFor({s:c.symbol,p:c.priceZar,c:c.change24,tab:c.tab,m:c.mcap});});
+ document.getElementById('apiStatus').textContent=`INSTANT 7 coins - Trying 5 proxies to bypass block...`;
+ render();
+}
+async function tryFetch(url){
+ try{const r=await fetch(url,{cache:'no-store'});if(!r.ok) throw 0;const j=await r.json();return j;}catch{return null;}
+}
+async function tryProxy(url,proxyFn){
+ try{
+  const proxyUrl=proxyFn(url);
+  const r=await fetch(proxyUrl,{cache:'no-store'});
+  if(!r.ok) throw 0;
+  let data;
+  try{data=await r.json();}catch{const txt=await r.text();data=JSON.parse(txt);}
+  if(data && data.contents){return JSON.parse(data.contents);}
+  return data;
+ }catch{return null;}
+}
+async function upgradeLive(){
+ document.getElementById('liveReport').textContent="Step 1/5: Trying direct VALR...";
+ let live=[];
+ // 1 direct
+ let d=await tryFetch('https://api.valr.com/v1/public/markets/ticker');
+ if(d && Array.isArray(d) && d.length>5){live=d.filter(t=>t.pair&&t.pair.endsWith('ZAR')&&parseFloat(t.lastTradedPrice)>0).map(t=>({id:t.pair.replace('ZAR','').toLowerCase(),symbol:t.pair.replace('ZAR',''),priceZar:parseFloat(t.lastTradedPrice),change24:parseFloat(t.percentChange||0),tab:parseFloat(t.percentChange||0)>3?"Gainers":parseFloat(t.percentChange||0)<-3?"Losers":"Popular",mcap:10000000000}))}
+ // 2-5 proxies
+ for(let i=0;i<proxies.length && live.length<5;i++){
+  document.getElementById('liveReport').textContent=`Step ${i+2}/5: Trying proxy ${i+1}... ${proxies.length} total - bypassing MTN block for Lester...`;
+  let proxied=await tryProxy('https://api.valr.com/v1/public/markets/ticker',proxies[i]);
+  if(proxied && Array.isArray(proxied) && proxied.length>5){
+   live=proxied.filter(t=>t.pair&&t.pair.endsWith('ZAR')&&parseFloat(t.lastTradedPrice)>0).map(t=>({id:t.pair.replace('ZAR','').toLowerCase(),symbol:t.pair.replace('ZAR',''),priceZar:parseFloat(t.lastTradedPrice),change24:parseFloat(t.percentChange||0),tab:parseFloat(t.percentChange||0)>3?"Gainers":parseFloat(t.percentChange||0)<-3?"Losers":"Popular",mcap:10000000000}));
+   if(live.length>=5) break;
+  }
+  await new Promise(r=>setTimeout(r,600));
+ }
+ if(live.length>=5){
+  state=live;analyses={};live.forEach(c=>{analyses[c.id]=sigFor({s:c.symbol,p:c.priceZar,c:c.change24,tab:c.tab,m:c.mcap});});
+  document.getElementById('apiStatus').textContent=`LIVE ${live.length} ZAR - NO VPN SUCCESS for Lester Bango - ${new Date().toLocaleTimeString()}`;
+  document.getElementById('liveReport').innerHTML=`✅ LIVE SUCCESS! No VPN needed! BTC R${(live.find(x=>x.symbol==="BTC")||{}).priceZar?.toLocaleString()||''} • ${live.length} coins LIVE • Bypassed block!`;
+ }else{
+  document.getElementById('apiStatus').textContent=`INSTANT 7 coins (all 5 proxies blocked by network) - ${new Date().toLocaleTimeString()} - Use VPN or WiFi`;
+  document.getElementById('liveReport').innerHTML=`ℹ️ MTN/Vodacom blocked all 5 proxies. Instant 7 coins still works with watermark. VPN will unlock 30+ LIVE.`;
+ }
+ render();
+}
+function render(){
+ const invest=parseFloat(document.getElementById('investAmt').value)||50;const fee=parseFloat(document.getElementById('feeSelect').value)||0.01;
+ const tabF=document.getElementById('valrTab').value;const riskF=document.getElementById('riskFilter').value;const sort=document.getElementById('sortBox').value;
+ let list=state.filter(c=>{const a=analyses[c.id];if(!a)return false;if(tabF!=="ALL"&&a.tab!==tabF)return false;if(riskF==="LOW"&&a.risk!=="LOW")return false;return true;});
+ if(sort==="MONEY")list.sort((a,b)=>(analyses[b.id]?.score||0)-(analyses[a.id]?.score||0));else list.sort((a,b)=>b.change24-a.change24);
+ let strong=Object.values(analyses).filter(a=>a.signal==="STRONG BUY");let avg=strong.length?strong.reduce((s,a)=>s+a.change,0)/strong.length:0;let totalNet=0;strong.forEach(a=>{totalNet+=invest*(a.change/100)-invest*fee;});let compound=invest;for(let i=0;i<7;i++){compound+=compound*(avg/100)*0.6;}
+ document.getElementById('moneyStats').innerHTML=`<div style="background:#000;border:1px solid #333;border-radius:6px;padding:6px;text-align:center"><span style="font-size:7px;color:#888">LESTER'S R${invest}</span><b style="display:block;color:#00ff66;font-size:13px">+R${(invest*avg/100).toFixed(2)}</b></div><div style="background:#000;border:1px solid #333;border-radius:6px;padding:6px;text-align:center"><span style="font-size:7px;color:#888">NET</span><b style="display:block;color:#00ff66;font-size:13px">R${totalNet.toFixed(2)}</b></div><div style="background:#000;border:1px solid #333;border-radius:6px;padding:6px;text-align:center"><span style="font-size:7px;color:#ffcc00">7-DAY</span><b style="display:block;color:#ffcc00;font-size:13px">R${compound.toFixed(2)}</b></div>`;
+ document.getElementById('coins').innerHTML=list.map(c=>{const a=analyses[c.id];const profit=invest*(a.change/100)-invest*fee;const total=invest+profit;const loss=profit<0;const tag=a.signal.includes('STRONG')?'tagBest':'tagFomo';return `<div class="card ${a.cls}"><div class="tag ${tag}">${a.signal.includes('STRONG')?'💰 BEST':a.signal}</div><div class="wm">👑 LESTER BANGO LEGACY</div><div style="display:flex;justify-content:space-between"><b>${c.symbol} • ${a.tab}</b><span class="price">R${c.priceZar.toLocaleString(undefined,{maximumFractionDigits:c.priceZar>100?2:6})}</span></div><div style="font-size:9px;color:${a.change>=0?'#00ff66':'#ff5555'}">${a.change>=0?'+':''}${a.change.toFixed(2)}%</div><div class="profit ${loss?'loss':''}" style="color:${loss?'#ff5555':'#00ff66'}">LESTER'S R${invest} → R${total.toFixed(2)} (${profit>=0?'+':''}R${profit.toFixed(2)})</div><div style="font-size:8px;color:#ccc;margin-top:4px">FOR LESTER BANGO: ${a.reasons.join(' • ')} • ${a.entry}</div></div>`}).join('');
+ document.getElementById('totalCount').textContent=state.length;document.getElementById('strongBuy').textContent=strong.length;document.getElementById('avoidCount').textContent=Object.values(analyses).filter(a=>a.signal.includes('AVOID')).length;const btc=state.find(x=>x.symbol==="BTC");document.getElementById('livePrice').textContent=btc?`R${(btc.priceZar/1000).toFixed(0)}k`:'-';
+}
+renderInstant();setTimeout(upgradeLive,1500);setInterval(upgradeLive,120000);
+</script></body></html>
