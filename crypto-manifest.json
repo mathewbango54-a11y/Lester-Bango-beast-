@@ -1,0 +1,17 @@
+{
+  "name": "Crypto Beast V1.1 - R50 Profit - Lester Bango Legacy",
+  "short_name": "Crypto Beast",
+  "description": "50 live crypto coins with R50 profit calculator - VALR / Luno - Lester Bango Legacy",
+  "start_url": "crypto.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#ffcc00",
+  "icons": [
+    {
+      "src": "legacy-empire.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
