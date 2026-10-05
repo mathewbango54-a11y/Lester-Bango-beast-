@@ -1,0 +1,93 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>👑 LESTER BANGO - MONEY CREATOR V3.3 WATERMARK</title>
+<link rel="manifest" href="crypto-manifest.json"><meta name="theme-color" content="#ffcc00">
+<meta name="apple-mobile-web-app-capable" content="yes"><link rel="apple-touch-icon" href="legacy-empire.jpg">
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('crypto-sw.js');}</script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(rgba(0,0,0,0.92),rgba(0,0,0,0.98)), url('legacy-empire.jpg');background-attachment:fixed;background-size:cover;color:#eee;font-family:Arial,sans-serif;padding:10px}
+.header{height:145px;background:linear-gradient(rgba(0,0,0,0.35),rgba(0,0,0,0.65)), url('legacy-empire.jpg') center/cover;border-radius:14px;border:2px solid #ffcc00;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:8px;box-shadow:0 0 25px rgba(255,204,0,0.5)}
+.header h1{color:#ffcc00;font-size:26px;margin:0;text-shadow:0 0 15px #ffcc00;letter-spacing:2px}.header .sub{color:#fff;font-size:15px;font-weight:bold;margin-top:2px}.header span{color:#ffcc88;font-size:8px;font-weight:bold;margin-top:6px;text-align:center}
+.moneybox{background:linear-gradient(135deg,rgba(255,204,0,0.20),rgba(0,0,0,0.92));border:2px solid #ffcc00;border-radius:12px;padding:12px;margin-bottom:10px}
+.livebox{background:linear-gradient(135deg,rgba(0,200,100,0.15),rgba(0,0,0,0.9));border:2px solid #00ff88;border-radius:12px;padding:10px;margin-bottom:10px}
+.investrow{display:flex;gap:5px;flex-wrap:wrap;align-items:center;justify-content:center;margin:6px 0}
+.investrow input,.investrow select{background:#000;color:#ffcc00;border:1px solid #ffcc00;border-radius:8px;padding:8px;text-align:center;font-weight:bold;min-width:85px;font-size:11px}
+button{background:#111;color:#ffcc00;border:1px solid #ffcc00;border-radius:6px;padding:7px 11px;font-size:9px;font-weight:bold;cursor:pointer}
+.install{background:#ffcc00;color:#000;border:none;border-radius:8px;padding:10px 14px;font-weight:bold}
+.status{background:rgba(16,16,16,0.96);border:1px solid #333;border-radius:8px;padding:8px;text-align:center;color:#ffcc88;font-size:9px;margin-bottom:8px}
+.statsgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:8px}.statbox{background:rgba(16,16,16,0.92);border:1px solid #332a00;border-radius:7px;padding:7px;text-align:center}.statbox b{display:block;color:#ffcc00;font-size:13px}.statbox span{font-size:6px;color:#aaa}
+#coins{display:grid;grid-template-columns:repeat(auto-fit,minmax(325px,1fr));gap:10px}
+
+/* WATERMARK CARD - LESTER BANGO */
+.card{background:linear-gradient(rgba(12,12,12,0.92),rgba(12,12,12,0.97)), url('legacy-empire.jpg');background-size:cover;background-position:center;border:1px solid #333;border-radius:12px;padding:10px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url('legacy-empire.jpg') center/cover;opacity:0.18;z-index:0;pointer-events:none}
+.card>*{position:relative;z-index:1}
+.card.strong{border-color:#ffcc00;box-shadow:0 0 18px rgba(255,204,0,0.4)}
+.card.strong::before{opacity:0.25}
+.card.sell{border-color:#ff4444;opacity:0.9}
+.card.fomo{border-color:#ff6600;box-shadow:0 0 12px rgba(255,102,0,0.3)}
+.watermarkName{position:absolute;bottom:2px;right:6px;font-size:7px;color:rgba(255,204,0,0.35);font-weight:bold;letter-spacing:1px;z-index:2;pointer-events:none}
+
+.top{display:flex;justify-content:space-between;align-items:center}.coin{font-weight:bold;font-size:14px}.priceZar{color:#00ff88;font-size:12px;font-weight:bold;text-shadow:0 0 5px rgba(0,255,136,0.3)}
+.badges{display:flex;gap:3px;flex-wrap:wrap;margin:5px 0}.badge{background:rgba(26,26,10,0.9);border:1px solid #444;border-radius:5px;padding:3px 6px;font-size:7px;color:#ccc}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:6px}.market{background:rgba(18,18,18,0.92);border:1px solid #2a2a2a;border-radius:5px;padding:5px;text-align:center}.market span{display:block;color:#888;font-size:6px}.market strong{display:block;font-size:11px}
+.profitbox{background:linear-gradient(135deg,rgba(0,100,30,0.55),rgba(0,60,20,0.4));border:1px solid #00aa44;border-radius:8px;padding:8px;margin-top:7px;text-align:center;backdrop-filter:blur(2px)}.profitbox.loss{background:linear-gradient(135deg,rgba(80,0,0,0.55),rgba(60,0,0,0.4));border-color:#aa0000}.profitbox.fomo{background:linear-gradient(135deg,rgba(80,40,0,0.6),rgba(60,30,0,0.5));border-color:#ff6600}
+.good{color:#00ff66}.bad{color:#ff5555}.reason{background:rgba(17,17,17,0.92);border-radius:5px;padding:5px;color:#ccc;font-size:8px;margin-top:6px}
+.tag{position:absolute;top:-7px;right:8px;font-size:7px;font-weight:bold;padding:2px 7px;border-radius:10px;z-index:3}.tagBest{background:#ffcc00;color:#000}.tagFomo{background:#ff6600;color:#fff}.tagAvoid{background:#ff4444;color:#fff}
+.legacyFooter{text-align:center;margin-top:20px;padding:15px;background:linear-gradient(135deg,rgba(0,0,0,0.9),rgba(40,30,0,0.85)), url('legacy-empire.jpg') center/cover;background-blend-mode:overlay;border:2px solid #ffcc00;border-radius:12px;box-shadow:0 0 20px rgba(255,204,0,0.4)}
+@media(max-width:700px){#coins{grid-template-columns:1fr}}
+</style></head><body>
+<div class="header"><h1>👑 LESTER BANGO</h1><div class="sub">💰 MONEY CREATOR V3.3 WATERMARK EDITION</div><span>LESTER BANGO LEGACY EMPIRE • LIVE ZAR • WATERMARKED • JOHANNESBURG SA</span></div>
+<div class="livebox"><span style="color:#00ff88;font-weight:bold;font-size:11px">🟢 LIVE VALR: <span id="apiStatus">Connecting for Lester Bango...</span></span><span style="float:right;color:#ffcc00;font-size:8px;font-weight:bold">👑 WATERMARK EDITION</span><div id="liveReport" style="font-size:8px;color:#ccc;margin-top:6px"></div></div>
+<div class="moneybox">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+<span style="color:#ffcc00;font-weight:bold;font-size:12px">👑 LESTER BANGO • R50 MONEY CREATOR</span>
+<button id="installBtn" class="install" style="display:none">📲 INSTALL LESTER BANGO APP</button>
+</div>
+<div class="investrow"><span style="color:#ffcc88">Lester's R</span><input id="investAmt" type="number" value="50" min="10" step="10" oninput="render()"><button onclick="setInvest(50)" style="background:#ffcc00;color:#000">R50</button><button onclick="setInvest(100)">R100</button><button onclick="setInvest(500)">R500</button><select id="feeSelect" onchange="render()"><option value="0.005">VALR 0.5%</option><option value="0.01" selected>Luno 1%</option></select></div>
+<div class="investrow"><select id="valrTab" onchange="render()"><option value="ALL" selected>VALR: All Live</option><option value="Popular">🔥 Popular</option><option value="Gainers">🚀 Gainers</option><option value="Losers">📉 Losers</option></select><select id="riskFilter" onchange="render()"><option value="ALL">All Risk</option><option value="LOW" selected>LOW RISK Only ✅</option></select><select id="sortBox" onchange="render()"><option value="MONEY">💰 Money Score</option><option value="DIP">📉 Best Dip</option><option value="GAIN">🚀 Top Gainer</option></select></div>
+<div id="moneyStats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px"></div>
+</div>
+<div id="status" class="status">Connecting LIVE for Lester Bango...</div>
+<div class="statsgrid"><div class="statbox"><b id="totalCount">0</b><span>LIVE COINS</span></div><div class="statbox"><b id="strongBuy">0</b><span>MONEY MAKERS</span></div><div class="statbox"><b id="avoidCount">0</b><span>AVOID</span></div><div class="statbox"><b id="livePrice">-</b><span>BTC ZAR</span></div></div>
+<div id="coins"><div style="padding:20px;text-align:center;color:#ffcc00">🔄 Loading watermarked cards for Lester Bango...</div></div>
+<div class="legacyFooter"><div style="color:#ffcc00;font-size:22px;font-weight:bold;letter-spacing:1px">👑 LESTER BANGO LEGACY EMPIRE 👑</div><div style="color:#fff;font-size:12px;margin-top:5px;font-weight:bold">Money Creator V3.3 Watermark Edition</div><div style="color:#ffcc88;font-size:9px;margin-top:4px">Built exclusively for Lester Bango • Each card watermarked with Legacy Empire • From R50 to Legacy</div><div style="color:#888;font-size:7px;margin-top:8px">© 2026 Lester Bango • Honest Tool • Educational Only</div></div>
+<script>
+let deferredPrompt;const installBtn=document.getElementById('installBtn');
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;installBtn.style.display='inline-block';});
+installBtn.addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;installBtn.style.display='none';});
+const VALR_PAIRS=["BTCZAR","ETHZAR","SOLZAR","XRPZAR","ADAZAR","AVAXZAR","BNBZAR","TRXZAR","DOGEZAR","DOTZAR","LINKZAR","NEARZAR","FILZAR","RLCZAR"];
+const fallbackData=[{id:"btc",symbol:"BTC",priceZar:1431174,change24:0.21,tab:"Popular",mcap:2_000_000_000_000,pair:"BTCZAR"},{id:"sol",symbol:"SOL",priceZar:2009,change24:-1.27,tab:"Popular",mcap:80_000_000_000,pair:"SOLZAR"},{id:"ada",symbol:"ADA",priceZar:4.42,change24:4.66,tab:"Gainers",mcap:15_000_000_000,pair:"ADAZAR"},{id:"rlc",symbol:"RLC",priceZar:11.81,change24:94.68,tab:"Gainers",mcap:80_000_000,pair:"RLCZAR"},{id:"near",symbol:"NEAR",priceZar:85.97,change24:3.57,tab:"New",mcap:2_000_000_000,pair:"NEARZAR"}];
+function setInvest(v){document.getElementById('investAmt').value=v;render();}
+function signalFor(c){const ch24=c.change24||0;const mcap=c.mcap||500_000_000;let risk="LOW";let isFomo=false;let isLoser=false;if(mcap<150_000_000)risk="HIGH";else if(mcap<600_000_000)risk="MEDIUM";if(ch24>25){risk="HIGH";isFomo=true;}if(ch24<-6){isLoser=true;risk="HIGH";}let trendScore=0;let reasons=[];if(c.tab==="Gainers"&&ch24>=3&&ch24<=12){trendScore+=4;reasons.push("Gainer +"+ch24.toFixed(2)+"%");}else if(ch24>12){trendScore-=2;reasons.push("FOMO");}else if(ch24>=-2&&ch24<=1){trendScore+=2;reasons.push("Stable");}let entry="WAIT";let entryScore=0;if(c.symbol==="SOL"&&ch24<0){entry="BUY NOW DIP 🔥";entryScore=3;trendScore+=3;}else if(c.symbol==="ADA"&&ch24>0){entry="BUY NOW SAFE 🔥";entryScore=3;}else if(ch24>25){entry="WAIT FOMO";entryScore=-3;}else if(ch24<-6){entry="AVOID";entryScore=-3;}let moneyScore=trendScore*2+entryScore+(risk==="LOW"?3:0);if(isFomo)moneyScore-=6;if(isLoser)moneyScore-=5;let sig='WATCH',cls='watch';if(moneyScore>=6&&risk!=="HIGH"&&!isFomo){sig='STRONG BUY';cls='strong';}else if(moneyScore>=3&&risk!=="HIGH"){sig='BUY';cls='strong';}else if(isFomo){sig='AVOID FOMO';cls='fomo';}else if(isLoser){sig='AVOID LOSER';cls='sell';}return {signal:sig,cls,score:moneyScore,conf:70,change24:ch24,change7:ch24*1.8,mcap,risk,entry,priceZar:c.priceZar,tab:c.tab,isFomo,isLoser,symbol:c.symbol,reasons}; }
+let state={coins:[]},analyses={};
+async function fetchWithCors(url){try{const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw 1;return await r.json();}catch(e){try{const r2=await fetch('https://corsproxy.io/?'+encodeURIComponent(url));return await r2.json();}catch{return null;}}}
+async function loadLiveValr(){
+ document.getElementById('apiStatus').textContent="Fetching watermarked live for Lester Bango...";
+ let coins=[];
+ try{const bulk=await fetchWithCors('https://api.valr.com/v1/public/markets/ticker');if(bulk&&Array.isArray(bulk)){bulk.forEach(t=>{if(t.pair&&t.pair.endsWith('ZAR')){const sym=t.pair.replace('ZAR','');const price=parseFloat(t.lastTradedPrice||0);const change=parseFloat(t.percentChange||0);if(price>0){let tab="Popular";if(change>3)tab="Gainers";else if(change<-3)tab="Losers";coins.push({id:sym.toLowerCase(),symbol:sym,priceZar:price,change24:change,tab:tab,mcap:10_000_000_000,pair:t.pair});}}});}}
+ catch(e){}
+ if(coins.length<3){coins=fallbackData;document.getElementById('apiStatus').textContent="Offline - Lester Bango Watermark ZAR";}
+ else{document.getElementById('apiStatus').textContent=`LIVE - ${coins.length} ZAR - Watermarked for Lester Bango - ${new Date().toLocaleTimeString()}`;}
+ state.coins=coins;analyses={};coins.forEach(c=>{analyses[c.id]=signalFor(c);});document.getElementById('status').innerHTML=`👑 LESTER BANGO V3.3 WATERMARK: ${coins.length} ZAR coins • ${Object.values(analyses).filter(a=>a.signal==='STRONG BUY').length} Money Makers • Watermarked`;render();
+}
+function render(){
+ const invest=parseFloat(document.getElementById('investAmt').value)||50;const fee=parseFloat(document.getElementById('feeSelect').value)||0;
+ const tabF=document.getElementById('valrTab').value;const riskF=document.getElementById('riskFilter').value;const sort=document.getElementById('sortBox').value;
+ let list=state.coins.filter(c=>{const a=analyses[c.id];if(!a)return false;if(tabF!=="ALL"&&a.tab!==tabF)return false;if(riskF==="LOW"&&a.risk!=="LOW")return false;return true;});
+ if(sort==="MONEY")list.sort((a,b)=>(analyses[b.id]?.score||0)-(analyses[a.id]?.score||0));else list.sort((a,b)=>b.change24-a.change24);
+ let strong=state.coins.map(c=>analyses[c.id]).filter(a=>a&&a.signal==='STRONG BUY');let avoid=state.coins.map(c=>analyses[c.id]).filter(a=>a&&a.signal.includes('AVOID')).length;
+ let avgProfit=strong.length?strong.reduce((s,a)=>s+a.change24,0)/strong.length:0;let totalNet=0;strong.forEach(a=>{totalNet+=invest*(a.change24/100)-invest*fee;});let compound7=invest;for(let i=0;i<7;i++){compound7+=compound7*(avgProfit/100)*0.6;}
+ document.getElementById('moneyStats').innerHTML=`<div style="background:#000;border:1px solid #333;border-radius:6px;padding:6px;text-align:center"><span style="font-size:7px;color:#888">LESTER'S R${invest}</span><b style="display:block;color:#00ff66;font-size:13px">+R${(invest*avgProfit/100).toFixed(2)}</b></div><div style="background:#000;border:1px solid #333;border-radius:6px;padding:6px;text-align:center"><span style="font-size:7px;color:#888">EACH BUY NET</span><b style="display:block;color:#00ff66;font-size:13px">R${totalNet.toFixed(2)}</b></div><div style="background:#000;border:1px solid #333;border-radius:6px;padding:6px;text-align:center"><span style="font-size:7px;color:#ffcc00">7-DAY LEGACY</span><b style="display:block;color:#ffcc00;font-size:13px">R${invest}→R${compound7.toFixed(2)}</b></div>`;
+ document.getElementById('coins').innerHTML=list.map(c=>{
+  const a=analyses[c.id];const ch24=a.change24;const profitNet=invest*(ch24/100)-invest*fee;const totalNow=invest+profitNet;const isLoss=profitNet<0;
+  const tagClass=a.signal.includes('STRONG BUY')?'tagBest':(a.isFomo?'tagFomo':'tagAvoid');const tagText=a.signal.includes('STRONG BUY')?'💰 LESTER BEST':(a.isFomo?'⚠️ FOMO':'🚫 AVOID');
+  return `<div class="card ${a.cls}"><div class="tag ${tagClass}">${tagText}</div><div class="watermarkName">👑 LESTER BANGO LEGACY</div><div class="top"><div class="coin">${c.symbol} • ${a.tab}</div><div style="text-align:right"><div class="priceZar">R${c.priceZar.toLocaleString()}</div><div style="font-size:9px;color:${ch24>=0?'#00ff66':'#ff5555'}">${ch24>=0?'+':''}${ch24.toFixed(2)}%</div></div></div>
+  <div class="profitbox ${isLoss?'loss':''}"><b class="${isLoss?'bad':'good'}">LESTER'S R${invest} → R${totalNow.toFixed(2)} (${profitNet>=0?'+':''}R${profitNet.toFixed(2)})</b></div>
+  <div class="reason"><b>FOR LESTER BANGO:</b> ${a.reasons.join(' • ')} • RISK ${a.risk} • ${a.entry}</div></div>`;
+ }).join('');
+ document.getElementById('totalCount').textContent=state.coins.length;
+ document.getElementById('strongBuy').textContent=Object.values(analyses).filter(a=>a.signal==='STRONG BUY').length;
+ document.getElementById('avoidCount').textContent=avoid;
+}
+loadLiveValr();setInterval(loadLiveValr,120000);
+</script></body></html>
