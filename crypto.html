@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>👑 LESTER BANGO LEGACY EMPIRE - R50 Money Creator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{background:#000;color:#fff;font-family:Arial;text-align:center;margin:0}
+.gold{color:#FFD700}.card{border:2px solid gold;margin:15px;padding:15px;border-radius:12px;background:#111}
+.btn{background:gold;color:black;padding:14px 28px;border-radius:10px;font-weight:bold;text-decoration:none;display:inline-block;margin:10px;font-size:18px}
+</style>
+</head>
+<body>
+<!-- SALES HEADER -->
+<div style="background:linear-gradient(90deg,gold,#ff9800);color:black;padding:20px">
+<h1>👑 LESTER BANGO LEGACY EMPIRE</h1>
+<h2>From R50 to Legacy • VALR LIVE Scanner V3.7</h2>
+</div>
+
+<div class="card">
+<h2 class="gold">🟢 LIVE DEMO: 7 Coins FREE</h2>
+<p>See how it works. Want 30 LIVE coins + STRONG BUY alerts?</p>
+<a class="btn" href="https://mathewbango54-a11y.github.io/Lester-Bango-beast-/crypto.html">👀 View FREE 7 Coins</a>
+</div>
+
+<div class="card" style="border-color:#00ff00">
+<h2 class="gold">🔓 UNLOCK EMPIRE - R50 / MONTH</h2>
+<p>✅ 30 LIVE ZAR coins (VALR real-time)</p>
+<p>✅ STRONG BUY / DIP signals (LOW RISK)</p>
+<p>✅ VPN fix for MTN/Vodacom</p>
+<p>✅ WhatsApp support direct to Lester</p>
+<p>✅ Capitec PayShap - Instant</p>
+
+<a class="btn" style="background:#00C853;color:white"
+href="https://wa.me/27622325196?text=Hi%20Lester%20%F0%9F%91%91%20I%20want%20to%20subscribe%20R50%2Fmonth%20Money%20Creator%20-%20Send%20me%20Capitec%20PayShap%20details">
+💬 Subscribe via WhatsApp - R50/month
+</a>
+
+<p style="margin-top:15px">Already paid? Enter monthly code:</p>
+<input id="codeInput" placeholder="Enter code e.g. LEGACY-MAY" style="padding:12px;font-size:16px;border-radius:8px">
+<button onclick="unlock()" class="btn" style="padding:10px 20px">UNLOCK 30 COINS</button>
+<p id="msg"></p>
+</div>
+
+<div class="card">
+<h3>How Monthly Works:</h3>
+<p>1. WhatsApp me → I send Capitec PayShap ID: 0622325196</p>
+<p>2. You PayShap R50 → Send proof</p>
+<p>3. I give you code: <b>LEGACY-NOV</b> (changes monthly)</p>
+<p>4. Code works 30 days → Then new code next month</p>
+</div>
+
+<script>
+const MONTH_CODES = {
+  "LEGACY-NOV": new Date("2026-12-01"), // Example: November code expires Dec 1
+  "LEGACY-OCT": new Date("2026-11-01"),
+  "LESTER50": new Date("2026-11-15") // your test code
+};
+
+function unlock(){
+  let code = document.getElementById('codeInput').value.trim().toUpperCase();
+  let expiry = MONTH_CODES[code];
+  if(expiry && new Date() < expiry){
+    localStorage.setItem('lester_paid','yes');
+    localStorage.setItem('lester_code',code);
+    localStorage.setItem('lester_expiry',expiry);
+    document.getElementById('msg').innerHTML = "✅ Unlocked! Redirecting to LIVE 30...";
+    setTimeout(()=>{ window.location.href="crypto.html?paid=1"; },1000);
+  } else if(expiry) {
+    document.getElementById('msg').innerHTML = "❌ Code expired. Pay R50 for new month code on WhatsApp";
+  } else {
+    document.getElementById('msg').innerHTML = "❌ Wrong code. WhatsApp Lester: 062 232 5196";
+  }
+}
+// Auto-check expiry
+let exp = localStorage.getItem('lester_expiry');
+if(exp && new Date() > new Date(exp)){
+  localStorage.removeItem('lester_paid');
+}
+</script>
+</body>
+  </html>
