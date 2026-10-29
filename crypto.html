@@ -1,0 +1,450 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07100d">
+<title>CRYPTO BEAST V3 FAST SCALPER</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#07100d;color:#e9fff3;font:14px Arial,sans-serif;padding:14px}
+header,.panel{background:#101c17;border:1px solid #244b38;border-radius:14px;padding:15px;margin-bottom:12px}
+h1{font-size:21px;margin:0 0 7px;color:#53f59b}
+h2{font-size:16px;margin:0 0 12px}
+p{color:#b4cabc;line-height:1.5}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.stat{background:#07120d;padding:12px;border-radius:10px;overflow-wrap:anywhere}
+.label{font-size:11px;color:#9bb6a5;margin-bottom:7px}
+.value{font-size:19px;font-weight:bold}
+button,select,input{width:100%;padding:11px;border-radius:8px;border:1px solid #315b45;background:#07120d;color:#e9fff3;margin:4px 0}
+button{background:#176b40;font-weight:bold;border:0;cursor:pointer}
+button.secondary{background:#26372e}
+.row{display:flex;gap:8px}
+.row>*{flex:1;min-width:0}
+.small{font-size:12px;color:#a6bdad}
+.good{color:#53f59b}.bad{color:#ff8888}.warn{color:#ffd477}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{text-align:left;padding:9px 5px;border-bottom:1px solid #294234}
+.scroll{overflow-x:auto}
+.pill{display:inline-block;padding:4px 7px;border-radius:6px;background:#243b2d;color:#8dffb5;font-size:11px}
+#status{white-space:pre-wrap;overflow-wrap:anywhere}
+footer{font-size:11px;color:#91a99a;padding:10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>⚡ CRYPTO BEAST V3</h1>
+  <div>FAST SCALPER • PAPER TRADING • ZAR MARKETS</div>
+  <p>Market scanner and simulated trading only. No real orders are sent.</p>
+  <span class="pill">5-minute strategy</span>
+  <span class="pill">VALR + Luno</span>
+  <span class="pill">No API keys</span>
+</header>
+
+<section class="panel">
+<h2>💰 Virtual account</h2>
+<div class="grid">
+ <div class="stat"><div class="label">Available cash</div><div class="value" id="cash">R200.00</div></div>
+ <div class="stat"><div class="label">Total equity</div><div class="value" id="equity">R200.00</div></div>
+ <div class="stat"><div class="label">Closed P/L</div><div class="value" id="pnl">R0.00</div></div>
+ <div class="stat"><div class="label">Today's entries</div><div class="value" id="entries">0 / 3</div></div>
+</div>
+<div class="row" style="margin-top:10px">
+ <button onclick="scan()">SCAN NOW</button>
+ <button class="secondary" id="autoBtn" onclick="toggleAuto()">AUTO: OFF</button>
+</div>
+<div class="row">
+ <button class="secondary" onclick="resetAccount()">RESET PAPER ACCOUNT</button>
+ <button class="secondary" onclick="exportLog()">EXPORT CSV</button>
+</div>
+<div id="status" class="small">Ready to scan. Your virtual account starts at R200.</div>
+</section>
+
+<section class="panel">
+<h2>⚙️ Risk settings</h2>
+<div class="grid">
+ <label class="small">Virtual stake (R)
+  <input id="stake" type="number" value="40" min="10" step="10">
+ </label>
+ <label class="small">Minimum signal score
+  <input id="minScore" type="number" value="70" min="1" max="100">
+ </label>
+ <label class="small">Stop loss (%)
+  <input id="stopPct" type="number" value="1.5" min="0.5" max="10" step="0.5">
+ </label>
+ <label class="small">Take profit (%)
+  <input id="targetPct" type="number" value="2.5" min="0.5" max="15" step="0.5">
+ </label>
+ <label class="small">Estimated fee per side (%)
+  <input id="feePct" type="number" value="0.35" min="0" max="3" step="0.05">
+ </label>
+ <label class="small">Daily loss limit (R)
+  <input id="lossLimit" type="number" value="10" min="1" step="1">
+ </label>
+</div>
+<p class="small">Fees are estimates, not verified account-specific rates. Spread and slippage can make actual outcomes worse.</p>
+</section>
+
+<section class="panel">
+<h2>🔎 Market signals</h2>
+<p class="small">Signals are heuristic rankings, not probabilities of winning. A 70 score does not mean a 70% chance of profit.</p>
+<div class="scroll">
+<table>
+<thead><tr><th>Market</th><th>Price</th><th>Move</th><th>Spread</th><th>Score</th><th>Action</th></tr></thead>
+<tbody id="signals"><tr><td colspan="6">Waiting for market data…</td></tr></tbody>
+</table>
+</div>
+</section>
+
+<section class="panel">
+<h2>📂 Open paper trades</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>Market</th><th>Entry</th><th>Now</th><th>Net P/L</th><th>Exit</th></tr></thead>
+<tbody id="openTrades"><tr><td colspan="5">No open trades</td></tr></tbody>
+</table>
+</div>
+</section>
+
+<section class="panel">
+<h2>📜 Recent trade history</h2>
+<div class="scroll">
+<table>
+<thead><tr><th>Market</th><th>Entry</th><th>Exit</th><th>Net P/L</th><th>Reason</th></tr></thead>
+<tbody id="history"><tr><td colspan="5">No closed trades yet</td></tr></tbody>
+</table>
+</div>
+</section>
+
+<footer>
+Educational experiment. Cryptocurrency is volatile. Paper trading does not reproduce real execution, fees, liquidity, latency, or slippage. Do not interpret this tool as a promise of income.
+</footer>
+
+<script>
+"use strict";
+
+const STARTING_CASH = 200;
+const VALR_URL = "https://api.valr.com/v1/public/marketsummary";
+const LUNO_URL = "https://api.luno.com/api/1/tickers";
+
+let account = loadAccount();
+let latestMarkets = [];
+let snapshots = {};
+let timer = null;
+let busy = false;
+
+function loadAccount(){
+  try {
+    const saved = JSON.parse(localStorage.getItem("cbv3_account"));
+    if(saved && Number.isFinite(saved.cash) && Array.isArray(saved.open)
+       && Array.isArray(saved.history)) return saved;
+  } catch(e){}
+  return {cash:STARTING_CASH,open:[],history:[],entries:[],day:today()};
+}
+
+function save(){
+  try { localStorage.setItem("cbv3_account",JSON.stringify(account)); }
+  catch(e){ status("Browser storage unavailable. Trade history may not persist."); }
+}
+
+function today(){ return new Date().toLocaleDateString("en-CA"); }
+function num(v){ const n=Number(v); return Number.isFinite(n)?n:0; }
+function money(v){ return "R"+num(v).toFixed(2); }
+function pct(v){ return (num(v)>=0?"+":"")+num(v).toFixed(2)+"%"; }
+function esc(v){
+  return String(v).replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+function status(s){ document.getElementById("status").textContent=s; }
+
+function rollDay(){
+  const d=today();
+  if(account.day!==d){
+    account.day=d;
+    account.entries=[];
+    save();
+  }
+}
+
+function settings(){
+  return {
+    stake:Math.max(10,num(document.getElementById("stake").value)||40),
+    minScore:Math.max(1,Math.min(100,num(document.getElementById("minScore").value)||70)),
+    stop:Math.max(.5,Math.min(10,num(document.getElementById("stopPct").value)||1.5))/100,
+    target:Math.max(.5,Math.min(15,num(document.getElementById("targetPct").value)||2.5))/100,
+    fee:Math.max(0,num(document.getElementById("feePct").value))/100,
+    lossLimit:Math.max(1,num(document.getElementById("lossLimit").value)||10)
+  };
+}
+
+async function getJSON(url){
+  const response=await fetch(url,{cache:"no-store"});
+  if(!response.ok) throw new Error("HTTP "+response.status);
+  return await response.json();
+}
+
+function parseValr(rows){
+  if(!Array.isArray(rows)) throw new Error("Unexpected VALR response");
+  return rows.map(x=>{
+    const pair=String(x.currencyPair||"").toUpperCase();
+    const last=num(x.lastTradedPrice);
+    const bid=num(x.bidPrice), ask=num(x.askPrice);
+    const prev=num(x.previousClosePrice);
+    if(!pair.endsWith("ZAR")||!last||!bid||!ask) return null;
+    return {
+      key:"VALR:"+pair,exchange:"VALR",pair,
+      last,bid,ask,prev,
+      change:prev?(last/prev-1)*100:0,
+      volume:num(x.quoteVolume),
+      spread:(ask-bid)/((ask+bid)/2)*100
+    };
+  }).filter(Boolean);
+}
+
+function parseLuno(data){
+  if(!data||!Array.isArray(data.tickers))
+    throw new Error("Unexpected Luno ticker response");
+  return data.tickers.map(x=>{
+    const pair=String(x.pair||"").toUpperCase();
+    const last=num(x.last_trade);
+    const bid=num(x.bid),ask=num(x.ask);
+    if(!pair.endsWith("ZAR")||!last||!bid||!ask) return null;
+    return {
+      key:"LUNO:"+pair,exchange:"Luno",pair,
+      last,bid,ask,prev:0,change:0,volume:0,
+      spread:(ask-bid)/((ask+bid)/2)*100
+    };
+  }).filter(Boolean);
+}
+
+function enrich(m){
+  const old=snapshots[m.key];
+  let shortMove=0;
+  if(old && old.price>0) shortMove=(m.last/old.price-1)*100;
+  snapshots[m.key]={price:m.last,time:Date.now()};
+  m.shortMove=shortMove;
+
+  // Rank price movement, broader daily change and spread.
+  // This is a screening score, not a calibrated probability.
+  let score=0;
+  score+=Math.min(35,Math.max(0,shortMove*18));
+  score+=Math.min(25,Math.max(0,m.change*2));
+  score+=Math.min(20,Math.max(0,shortMove*10));
+  score+=Math.max(0,20-Math.max(0,m.spread)*8);
+  if(shortMove<=0) score-=20;
+  if(m.spread>1) score-=20;
+  m.score=Math.max(0,Math.min(100,Math.round(score)));
+  m.netPotential=m.shortMove-2*settings().fee-m.spread;
+  return m;
+}
+
+function getDailyClosedPnl(){
+  rollDay();
+  return account.history
+    .filter(t=>t.day===account.day)
+    .reduce((sum,t)=>sum+num(t.pnl),0);
+}
+
+function positionPnl(t,price){
+  const gross=t.qty*(price-t.entry);
+  const exitFee=t.qty*price*t.fee;
+  return gross-t.entryFee-exitFee;
+}
+
+function totalEquity(){
+  return account.cash+account.open.reduce((sum,t)=>{
+    return sum+t.qty*t.last;
+  },0);
+}
+
+function render(){
+  rollDay();
+  document.getElementById("cash").textContent=money(account.cash);
+  document.getElementById("equity").textContent=money(totalEquity());
+  const closed=account.history.reduce((s,t)=>s+num(t.pnl),0);
+  document.getElementById("pnl").textContent=money(closed);
+  document.getElementById("pnl").className="value "+(closed>=0?"good":"bad");
+  document.getElementById("entries").textContent=account.entries.length+" / 3";
+
+  const body=document.getElementById("signals");
+  if(!latestMarkets.length){
+    body.innerHTML='<tr><td colspan="6">No market data available yet.</td></tr>';
+  }else{
+    body.innerHTML=latestMarkets.slice(0,30).map(m=>{
+      const canEnter=m.score>=settings().minScore &&
+        m.shortMove>0 && m.netPotential>0;
+      return `<tr>
+        <td>${esc(m.exchange)}<br><b>${esc(m.pair)}</b></td>
+        <td>${money(m.last)}</td>
+        <td class="${m.shortMove>=0?"good":"bad"}">${pct(m.shortMove)}</td>
+        <td>${pct(m.spread)}</td>
+        <td><b>${m.score}</b></td>
+        <td>${canEnter
+          ?`<button onclick="paperBuy('${esc(m.key)}')">PAPER BUY</button>`
+          :'<span class="small">WAIT</span>'}</td>
+      </tr>`;
+    }).join("");
+  }
+
+  const ob=document.getElementById("openTrades");
+  ob.innerHTML=account.open.length?account.open.map(t=>{
+    const pnl=positionPnl(t,t.last);
+    return `<tr><td>${esc(t.exchange)}<br>${esc(t.pair)}</td>
+      <td>${money(t.entry)}</td><td>${money(t.last)}</td>
+      <td class="${pnl>=0?"good":"bad"}">${money(pnl)}</td>
+      <td><button class="secondary" onclick="paperSell('${esc(t.id)}','Manual')">Close</button></td></tr>`;
+  }).join(""):'<tr><td colspan="5">No open trades</td></tr>';
+
+  const hb=document.getElementById("history");
+  hb.innerHTML=account.history.slice(-20).reverse().map(t=>
+    `<tr><td>${esc(t.exchange)}<br>${esc(t.pair)}</td>
+    <td>${money(t.entry)}</td><td>${money(t.exit)}</td>
+    <td class="${t.pnl>=0?"good":"bad"}">${money(t.pnl)}</td>
+    <td>${esc(t.reason)}</td></tr>`
+  ).join("")||'<tr><td colspan="5">No closed trades yet</td></tr>';
+}
+
+function paperBuy(key){
+  rollDay();
+  const m=latestMarkets.find(x=>x.key===key);
+  const s=settings();
+  if(!m) return status("Market not found. Scan again.");
+  if(account.open.length>=1) return status("Risk limit: only one open position allowed.");
+  if(account.entries.length>=3) return status("Daily limit reached: three entries maximum.");
+  if(getDailyClosedPnl()<=-s.lossLimit) return status("Daily loss limit reached.");
+  if(m.score<s.minScore||m.shortMove<=0||m.netPotential<=0)
+    return status("Signal no longer passes filters. Wait for another scan.");
+  const stake=Math.min(s.stake,account.cash);
+  if(stake<10) return status("Insufficient virtual cash.");
+  const fee=stake*s.fee;
+  const qty=(stake-fee)/m.ask;
+  if(!Number.isFinite(qty)||qty<=0) return status("Invalid position size.");
+
+  account.cash-=stake;
+  account.open.push({
+    id:Date.now()+"-"+Math.random().toString(36).slice(2,7),
+    key:m.key,exchange:m.exchange,pair:m.pair,
+    entry:m.ask,last:m.last,qty,stake,entryFee:fee,fee:s.fee,
+    stop:m.ask*(1-s.stop),target:m.ask*(1+s.target),
+    opened:new Date().toISOString(),score:m.score
+  });
+  account.entries.push(Date.now());
+  save();render();
+  status("Paper trade opened on "+m.exchange+" "+m.pair+
+    ". No real cryptocurrency was bought.");
+}
+
+function paperSell(id,reason){
+  const i=account.open.findIndex(t=>t.id===id);
+  if(i<0)return;
+  const t=account.open[i];
+  const exit=t.last;
+  const proceeds=t.qty*exit*(1-t.fee);
+  const pnl=proceeds-t.stake-t.entryFee;
+  account.cash+=proceeds;
+  account.history.push({
+    exchange:t.exchange,pair:t.pair,entry:t.entry,exit,pnl,reason,
+    day:account.day,opened:t.opened,closed:new Date().toISOString()
+  });
+  account.open.splice(i,1);
+  save();render();
+  status("Paper trade closed: "+reason+". Net simulated P/L: "+money(pnl));
+}
+
+function updatePositions(markets){
+  for(const t of [...account.open]){
+    const m=markets.find(x=>x.key===t.key);
+    if(m)t.last=m.bid||m.last;
+    if(t.last<=t.stop)paperSell(t.id,"Stop loss");
+    else if(t.last>=t.target)paperSell(t.id,"Take profit");
+    else if(Date.now()-Date.parse(t.opened)>=30*60*1000)
+      paperSell(t.id,"30-minute time exit");
+  }
+}
+
+async function scan(){
+  if(busy)return;
+  busy=true;
+  status("Fetching public VALR and Luno market data…");
+  const errors=[];
+  try{
+    const results=await Promise.allSettled([getJSON(VALR_URL),getJSON(LUNO_URL)]);
+    let markets=[];
+    if(results[0].status==="fulfilled"){
+      try{markets.push(...parseValr(results[0].value));}
+      catch(e){errors.push("VALR data format: "+e.message);}
+    }else errors.push("VALR unavailable: "+results[0].reason.message);
+    if(results[1].status==="fulfilled"){
+      try{markets.push(...parseLuno(results[1].value));}
+      catch(e){errors.push("Luno data format: "+e.message);}
+    }else errors.push("Luno unavailable: "+results[1].reason.message);
+
+    // Luno tickers do not provide 24-hour change in this response.
+    // Calculate only from real snapshots collected by this browser.
+    markets.forEach(m=>{
+      if(m.exchange==="Luno"){
+        const historyKey="cbv3_prev_"+m.key;
+        try{
+          const old=JSON.parse(localStorage.getItem(historyKey)||"null");
+          if(old&&old.price>0)m.change=(m.last/old.price-1)*100;
+          localStorage.setItem(historyKey,JSON.stringify({
+            price:m.last,time:Date.now()
+          }));
+        }catch(e){}
+      }
+      enrich(m);
+    });
+
+    latestMarkets=markets.sort((a,b)=>b.score-a.score);
+    updatePositions(markets);
+    save();render();
+    status("Last scan: "+new Date().toLocaleTimeString()+
+      "\nMarkets loaded: "+markets.length+
+      "\n"+(errors.length?errors.join("\n"):"Both public data sources responded.")+
+      "\nShort-term movement is measured between browser scans, not historical candles. "+
+      "A fresh browser session has no prior short-term history.");
+  }catch(e){
+    status("Scan failed: "+e.message+
+      "\nCheck your internet connection or try another browser. No fake data was added.");
+  }finally{busy=false;}
+}
+
+function toggleAuto(){
+  if(timer){
+    clearInterval(timer);timer=null;
+    document.getElementById("autoBtn").textContent="AUTO: OFF";
+    status("Automatic scanning stopped.");
+  }else{
+    timer=setInterval(scan,60000);
+    document.getElementById("autoBtn").textContent="AUTO: ON";
+    scan();
+  }
+}
+
+function resetAccount(){
+  if(!confirm("Reset virtual cash to R200 and delete paper trade history?"))return;
+  if(timer){clearInterval(timer);timer=null;
+    document.getElementById("autoBtn").textContent="AUTO: OFF";}
+  account={cash:STARTING_CASH,open:[],history:[],entries:[],day:today()};
+  save();render();status("Paper account reset. No real funds were affected.");
+}
+
+function exportLog(){
+  const rows=[["Exchange","Pair","Entry","Exit","Net P/L","Reason","Day"]];
+  account.history.forEach(t=>rows.push([
+    t.exchange,t.pair,t.entry,t.exit,t.pnl,t.reason,t.day
+  ]));
+  const csv=rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download="crypto-beast-paper-history.csv";a.click();
+  URL.revokeObjectURL(url);
+}
+
+render();
+</script>
+</body>
+</html>
