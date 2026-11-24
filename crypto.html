@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'">
+<title>KENNY - BTC ONLY - PRIVATE</title>
+<style>
+  *{box-sizing:border-box;font-family:Arial,sans-serif}
+  body{background:#0a0a0a;color:#fff;margin:0;padding:12px}
+  .card{background:#141414;border:1px solid #222;border-radius:14px;padding:14px;margin-bottom:12px}
+  h1{font-size:20px;text-align:center;margin:6px 0}
+  .sub{text-align:center;color:#aaa;font-size:12px}
+  .big{font-size:36px;font-weight:900;text-align:center;padding:14px;border-radius:12px;margin:10px 0;line-height:1.1}
+  .BUY{background:#00c853;color:#000}.WAIT{background:#ffab00;color:#000}.NOTRADE{background:#d32f2f;color:#fff}.LATE{background:#7b1fa2;color:#fff}
+  .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #222;font-size:14px}
+  .blue{color:#00e5ff;font-weight:bold}.red{color:#ff5252;font-weight:bold}.green{color:#00e676}
+  button{width:100%;padding:13px;background:#00e5ff;border:none;border-radius:10px;font-weight:900;font-size:16px;margin-top:10px}
+  .smallbtn{padding:10px;font-size:13px;margin-top:6px}
+  select,input{width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#222;color:#fff;margin:6px 0;font-size:15px}
+  label{font-size:12px;color:#aaa}
+  .plan{font-size:13px;line-height:1.6;color:#ddd}
+  .levels{background:#001a12;border:1px solid #00c853;border-radius:10px;padding:10px;font-size:13px;line-height:1.7;margin-top:8px}
+  .lock{max-width:400px;margin:60px auto;text-align:center;background:#141414;padding:24px;border-radius:16px;border:1px solid #333}
+  .secure{font-size:11px;color:#00e676;text-align:center}
+  .check{font-size:13px;padding:8px 0;border-bottom:1px solid #222;display:flex;justify-content:space-between}
+  .pass{color:#00e676;font-weight:bold}.fail{color:#ff5252;font-weight:bold}
+  .btc-only{background:#ffb300;color:#000;text-align:center;padding:8px;border-radius:8px;font-weight:900;font-size:13px;margin:8px 0}
+</style>
+</head>
+<body>
+
+<!-- PASSWORD LOCK -->
+<div id="lockScreen" class="lock">
+  <div style="font-size:40px">🔒</div>
+  <h2>KENNY PRIVATE</h2>
+  <p style="color:#aaa;font-size:13px">BITCOIN ONLY • Your private website</p>
+  <input type="password" id="passInput" placeholder="Enter password" />
+  <button onclick="unlock()">🔓 UNLOCK</button>
+  <p id="passError" style="color:#ff5252;font-size:12px;display:none">Wrong password.</p>
+  <p class="secure">🔐 BTC ONLY • Offline • No API to hack</p>
+</div>
+
+<div id="mainSite" style="display:none">
+
+<h1>⚡ KENNY - BITCOIN ONLY</h1>
+<p class="sub">BTCUSD ONLY • 0.01 LOT • -$5 / +$20 • NO OTHER CURRENCY</p>
+<div class="btc-only">₿ BTCUSD ONLY - ALL OTHER PAIRS REMOVED</div>
+<p class="secure">✅ VALIDATION FILTER ON - Signal must pass 5 checks to be valid</p>
+
+<div class="card">
+  <div style="display:flex;justify-content:space-between">
+    <div><small>SA TIME</small><div id="clock" style="font-size:19px;font-weight:900">--:--:--</div></div>
+    <div style="text-align:right"><small>DAILY</small><div id="score" style="font-size:19px;font-weight:900;color:#00e676">0W - 0L</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 style="margin:0 0 8px">👀 1. WHAT DOES META SAY? - BTCUSD ONLY</h3>
+  <label>Pair you are looking at on META? (Must be BTCUSD)</label>
+  <select id="pair">
+    <option value="BTCUSD">₿ BTCUSD - Bitcoin ONLY ✅</option>
+    <option value="OTHER">❌ Other Pair - NOT ALLOWED</option>
+  </select>
+  <label>BTC Price on META right now?</label>
+  <input type="number" id="priceInput" placeholder="e.g. 59605" value="59605" />
+  <label>BTC Price on KRAKEN / API right now? (for validation)</label>
+  <input type="number" id="apiPrice" placeholder="e.g. 59605 - check Kraken" value="59605" />
+  <label>H1 Candle on META?</label>
+  <select id="h1"><option value="RED">🔴 RED - H1</option><option value="BLUE">🔵 BLUE - H1</option></select>
+  <label>M30 Candle on META?</label>
+  <select id="m30"><option value="RED">🔴 RED - M30</option><option value="BLUE">🔵 BLUE - M30</option></select>
+  <label>Price 30 min ago on META?</label>
+  <input type="number" id="oldPrice" placeholder="e.g. 59500" value="59500" />
+</div>
+
+<div class="card">
+  <h3 style="margin:0 0 8px">✍️ 2. LESTER'S + MINDSET</h3>
+  <label>How many GREENS on Lester's App? (BTC only)</label>
+  <select id="greens">
+    <option value="0" selected>0 Greens - All Red</option>
+    <option value="1">1 Green</option>
+    <option value="2">2 Greens</option>
+    <option value="3">3 Greens</option>
+    <option value="4">4 Greens</option>
+    <option value="5">5 Greens</option>
+    <option value="6">6 Greens - All Green</option>
+  </select>
+  <label>Did you check META yourself? (Validation)</label>
+  <select id="checkedMeta">
+    <option value="no">NO - I didn't check Meta yet</option>
+    <option value="yes">YES - I looked at Meta myself ✅</option>
+  </select>
+  <label>How do you feel?</label>
+  <select id="feeling">
+    <option value="calm">Calm / Peaceful - Can Trade</option>
+    <option value="rushed">Rushed / Want Money Fast - DON'T TRADE</option>
+    <option value="scared">Scared / Tired - DON'T TRADE</option>
+  </select>
+</div>
+
+<div class="card">
+  <h3 style="margin:0 0 6px">🛡️ VALIDATION FILTER - 5 CHECKS</h3>
+  <div id="validationList">
+    <div class="check"><span>1. Pair is BTCUSD ONLY?</span><span id="v1">-</span></div>
+    <div class="check"><span>2. Meta Price = API Price? (Within $200)</span><span id="v2">-</span></div>
+    <div class="check"><span>3. H1 + M30 Same Colour?</span><span id="v3">-</span></div>
+    <div class="check"><span>4. Lester's 4+ Greens + You Checked Meta?</span><span id="v4">-</span></div>
+    <div class="check"><span>5. Not Late? (Move < $400 in 30min) + Calm?</span><span id="v5">-</span></div>
+  </div>
+  <div style="font-size:12px;color:#888;margin-top:8px">All 5 must be ✅ GREEN to get BUY. If 1 fails, it's NO TRADE. This stops fake signals.</div>
+</div>
+
+<div class="card">
+  <div id="signal" class="big WAIT">PRESS BELOW</div>
+  <div id="reason" style="text-align:center;font-size:13px;line-height:1.5;color:#ccc">Fill in Meta above, then press.</div>
+  <div id="levels" class="levels" style="display:none"></div>
+  <button onclick="check()">✅ RUN VALIDATION FILTER</button>
+  <div style="display:flex;gap:8px">
+    <button class="smallbtn" style="background:#00c853" onclick="addWin()">✅ I WON +$20</button>
+    <button class="smallbtn" style="background:#ff5252" onclick="addLoss()">❌ I LOST -$5</button>
+  </div>
+  <button class="smallbtn" style="background:#333;color:#fff" onclick="resetDay()">🔄 Reset Day</button>
+  <button class="smallbtn" style="background:#000;color:#ff5252;border:1px solid #333" onclick="lockAgain()">🔒 LOCK</button>
+</div>
+
+<div class="card plan">
+  <b>📋 BTC ONLY RULES:</b><br>
+  ✅ BUY ONLY BTCUSD: H1 BLUE + M30 BLUE + 4+ Greens + All 5 Checks PASS + Calm<br>
+  🛑 ALL RED = NO TRADE - We do NOT sell. We wait for BUY.<br>
+  🟣 LATE = NO TRADE - Don't chase<br>
+  🎯 TP: +$20 &nbsp; | &nbsp; 🛑 SL: -$5 &nbsp; | &nbsp; 🛑 2 Wins / 2 Losses = STOP<br>
+  🐢 Old Lady Rule: Walk Slow - Bitcoin only, no other pair
+</div>
+</div>
+
+<script>
+const MY_PASSWORD = "Kenny2026";
+function unlock(){
+  if(document.getElementById('passInput').value === MY_PASSWORD){
+    document.getElementById('lockScreen').style.display='none';
+    document.getElementById('mainSite').style.display='block';
+    sessionStorage.setItem('kenny_unlocked','yes');
+  } else { document.getElementById('passError').style.display='block'; }
+}
+function lockAgain(){
+  document.getElementById('lockScreen').style.display='block';
+  document.getElementById('mainSite').style.display='none';
+  sessionStorage.removeItem('kenny_unlocked');
+  document.getElementById('passInput').value='';
+}
+if(sessionStorage.getItem('kenny_unlocked')==='yes'){
+  document.getElementById('lockScreen').style.display='none';
+  document.getElementById('mainSite').style.display='block';
+}
+document.addEventListener('contextmenu', e => { if(document.getElementById('mainSite').style.display!=='none') e.preventDefault(); });
+
+let wins = parseInt(localStorage.getItem('kenny_wins')||'0');
+let losses = parseInt(localStorage.getItem('kenny_losses')||'0');
+function updateScore(){ document.getElementById('score').innerText = wins + 'W - ' + losses + 'L'; }
+function addWin(){ wins++; localStorage.setItem('kenny_wins', wins); updateScore(); check(); }
+function addLoss(){ losses++; localStorage.setItem('kenny_losses', losses); updateScore(); check(); }
+function resetDay(){ wins=0; losses=0; localStorage.setItem('kenny_wins','0'); localStorage.setItem('kenny_losses','0'); updateScore(); check(); }
+updateScore();
+function tick(){
+  const now = new Date(new Date().toLocaleString('en-US',{timeZone:'Africa/Johannesburg'}));
+  document.getElementById('clock').innerText = now.toLocaleTimeString('en-ZA');
+}
+setInterval(tick,1000); tick();
+
+function setV(id, pass){
+  document.getElementById(id).innerHTML = pass ? '<span class="pass">✅ PASS</span>' : '<span class="fail">❌ FAIL</span>';
+  return pass;
+}
+
+function check(){
+  const pair = document.getElementById('pair').value;
+  const price = parseFloat(document.getElementById('priceInput').value) || 0;
+  const apiP = parseFloat(document.getElementById('apiPrice').value) || 0;
+  const old = parseFloat(document.getElementById('oldPrice').value) || price;
+  const h1Color = document.getElementById('h1').value;
+  const m30Color = document.getElementById('m30').value;
+  const greens = parseInt(document.getElementById('greens').value);
+  const checkedMeta = document.getElementById('checkedMeta').value;
+  const feeling = document.getElementById('feeling').value;
+  const move30 = price - old;
+  const diff = Math.abs(price - apiP);
+
+  // VALIDATION FILTER - 5 CHECKS
+  const v1 = setV('v1', pair === 'BTCUSD');
+  const v2 = setV('v2', diff <= 200 && price > 0);
+  const v3 = setV('v3', h1Color === m30Color);
+  const v4 = setV('v4', greens >= 4 && checkedMeta === 'yes');
+  const v5 = setV('v5', Math.abs(move30) <= 400 && feeling === 'calm');
+  const allPass = v1 && v2 && v3 && v4 && v5;
+
+  const sig = document.getElementById('signal');
+  const reason = document.getElementById('reason');
+  const levels = document.getElementById('levels');
+  levels.style.display='none';
+
+  if(wins>=2){ sig.className='big NOTRADE'; sig.innerText='🛑 STOP - 2 WINS DONE'; reason.innerHTML='You won 2 today. Close app.'; return; }
+  if(losses>=2){ sig.className='big NOTRADE'; sig.innerText='🛑 STOP - 2 LOSSES DONE'; reason.innerHTML='You lost 2 today. Stop.'; return; }
+  if(pair !== 'BTCUSD'){ sig.className='big NOTRADE'; sig.innerText='🛑 NO TRADE - WRONG PAIR'; reason.innerHTML='We trade BTCUSD ONLY.<br>Close other pairs. Come back to Bitcoin.'; return; }
+  if(diff > 200){ sig.className='big NOTRADE'; sig.innerText='🛑 NO TRADE - PRICE MISMATCH'; reason.innerHTML=`Meta price $${price.toLocaleString()} vs API $${apiP.toLocaleString()} = $${diff.toFixed(0)} difference.<br>Too big. One is wrong. Do NOT trade.`; return; }
+  if(checkedMeta !== 'yes'){ sig.className='big WAIT'; sig.innerText='⏳ WAIT - CHECK META'; reason.innerHTML='Validation Failed: You must look at Meta yourself first.<br>Change "Did you check Meta" to YES.'; return; }
+  if(feeling !== 'calm'){ sig.className='big NOTRADE'; sig.innerText='🛑 NO TRADE - MINDSET'; reason.innerHTML='You feel rushed / scared. Walk slow.'; return; }
+  if(Math.abs(move30) > 400){ sig.className='big LATE'; sig.innerText='🟣 LATE - DON\'T CHASE'; reason.innerHTML=`Price moved $${move30.toFixed(0)} in 30 min.<br>You are late. Wait for pullback.`; return; }
+
+  if(allPass && h1Color === 'BLUE' && m30Color === 'BLUE'){
+    sig.className='big BUY'; sig.innerText='✅ BUY NOW 0.01 - BTC ONLY';
+    reason.innerHTML=`ALL 5 CHECKS PASSED ✅<br>BTC H1 BLUE + M30 BLUE + ${greens}/6 Greens<br>VALIDATED BUY`;
+    levels.style.display='block';
+    levels.innerHTML=`<b>📍 BTC TRADE SETUP:</b><br>Pair: BTCUSD ONLY<br>Entry: $${price.toLocaleString()}<br>🛑 SL: $${(price-500).toLocaleString()} (-$5)<br>🎯 TP: $${(price+2000).toLocaleString()} (+$20)`;
+  } else if(h1Color === 'RED' && m30Color === 'RED'){
+    sig.className='big NOTRADE'; sig.innerText='🛑 NO TRADE - ALL RED';
+    reason.innerHTML='BTC H1 RED + M30 RED = Sellers in control.<br>We do NOT sell. We WAIT for BLUE BUY.';
+  } else {
+    sig.className='big WAIT'; sig.innerText='⏳ WAIT - MIXED';
+    reason.innerHTML=`BTC H1 ${h1Color} but M30 ${m30Color} - They disagree.<br>Validation: Wait for both BLUE.`;
+  }
+}
+</script>
+</body>
+  </html>
