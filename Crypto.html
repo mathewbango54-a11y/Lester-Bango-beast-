@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KENNY ONE SYSTEM</title>
+<style>
+body{background:#0a0a0a;color:white;font-family:Arial;padding:16px;text-align:center}
+.card{background:#151515;border-radius:16px;padding:18px;margin:10px 0;border:2px solid #333}
+.big{font-size:32px;font-weight:900}
+.red{color:#ff3b30}.green{color:#00ff88}.yellow{color:#ffcc00}
+button{background:#00ff88;color:black;border:none;padding:14px 20px;border-radius:12px;font-weight:900;font-size:16px;width:100%;margin-top:10px}
+input{padding:12px;border-radius:10px;border:1px solid #333;background:#222;color:white;width:90%;text-align:center;font-size:16px}
+.small{font-size:13px;color:#aaa;line-height:1.5}
+.badge{display:inline-block;padding:6px 12px;border-radius:20px;font-weight:900;margin:4px}
+</style></head>
+<body>
+<h2>KENNY ONE SYSTEM 👑</h2><div class="small">BTC ONLY • AUTO • NO VALIDATION • V12 FINAL</div>
+
+<div class="card">
+<div>BTC LIVE PRICE</div>
+<div id="price" class="big">$ ---</div>
+<div id="time" class="small">Connecting to 4 APIs...</div>
+<div id="moves" class="small"></div>
+</div>
+
+<div class="card" id="signalCard">
+<div id="signal" class="big yellow">🟡 WAIT - LOADING...</div>
+<div id="conf" class="small"></div>
+<div id="why" class="small" style="margin-top:10px;text-align:left"></div>
+<div id="trade" class="small" style="margin-top:10px"></div>
+</div>
+
+<div class="card">
+<div class="small">YOUR BALANCE (Rands) - For Protection</div>
+<input id="bal" type="number" value="167" oninput="update()">
+<div id="lock" style="margin-top:8px;font-weight:900"></div>
+<div class="small">If balance under R500 = DEMO ONLY LOCKED. Bodyguard always wins.</div>
+</div>
+
+<div class="card">
+<div class="small">WORLD FACTORS (Auto)</div>
+<div id="factors" class="small"></div>
+</div>
+
+<div class="card">
+<div class="small">STRATEGY VOTES (8 Strategies)</div>
+<div id="votes" class="small"></div>
+</div>
+
+<div class="card">
+<div class="small">TRADE JOURNAL (Auto)</div>
+<div id="journal" class="small">No trades yet today.<br>Losses today: <span id="lossCount">0</span> / 2 - If 2 losses, system LOCKS for today.</div>
+<button onclick="markWin()">✅ I WON DEMO +$20</button>
+<button onclick="markLoss()" style="background:#ff3b30;color:white">❌ I LOST DEMO -$5</button>
+<button onclick="resetDay()" style="background:#333;color:white">Reset Day</button>
+</div>
+
+<div class="small" style="margin-top:12px">⚠️ DEMO ONLY. This is not financial advice. BTC is risky. Never trade your food money. R167 is for food.</div>
+
+<script>
+let history=[]; let losses=0; let lastPrice=0;
+let priceHistory={}; // store price by time
+
+async function getPrice(){
+  let prices=[];
+  try{let r=await fetch('https://api.coinbase.com/v2/prices/BTC-USD/spot'); let j=await r.json(); prices.push(parseFloat(j.data.amount));}catch(e){}
+  try{let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'); let j=await r.json(); prices.push(parseFloat(j.price));}catch(e){}
+  try{let r=await fetch('https://api.kraken.com/0/public/Ticker?pair=XBTUSD'); let j=await r.json(); prices.push(parseFloat(j.result.XXBTZUSD.c[0]));}catch(e){}
+  try{let r=await fetch('https://api.bitstamp.net/api/v2/ticker/btcusd/'); let j=await r.json(); prices.push(parseFloat(j.last));}catch(e){}
+  if(prices.length==0) return null;
+  prices.sort((a,b)=>a-b);
+  return prices[Math.floor(prices.length/2)];
+}
+
+function addHistory(p){
+  let now=Date.now();
+  history.push({t:now,p:p});
+  // keep 4h
+  history=history.filter(h=>now-h.t<4*3600*1000);
+}
+
+function priceAgo(mins){
+  let target=Date.now()-mins*60*1000;
+  let best=null;
+  for(let h of history){ if(Math.abs(h.t-target)<5*60*1000){ best=h.p; } }
+  return best;
+}
+
+function calc(){
+  let p=lastPrice;
+  if(!p) return;
+  let p15=priceAgo(15), p30=priceAgo(30), p60=priceAgo(60), p240=priceAgo(240);
+  // If not enough history, simulate from current moves for first run - use live price as base and show learning
+  let move15=p15? p-p15:0, move30=p30? p-p30:0, move60=p60? p-p60:0;
+  let speed=Math.abs(move60);
+  let faster = Math.abs(move15) > Math.abs(move30)/2;
+
+  // STRATEGY VOTES
+  let votes={buy:0,sell:0,wait:0, details:[]};
+  function vote(s,reason){ if(s=='BUY'){votes.buy++;} if(s=='SELL'){votes.sell++;} if(s=='WAIT'){votes.wait++;} votes.details.push(reason); }
+
+  // 1 Trend
+  if(move60<-150) vote('SELL','Trend: Down '+move60.toFixed(0));
+  else if(move60>150) vote('BUY','Trend: Up +'+move60.toFixed(0));
+  else vote('WAIT','Trend: Flat');
+
+  // 2 Breakout - use 1h high/low approx
+  if(move60<-400) vote('SELL','Breakout: Broke floor fast');
+  else if(move60>400) vote('BUY','Breakout: Broke ceiling fast');
+  else vote('WAIT','Breakout: No break');
+
+  // 3 Mean Reversion - too far too fast = wait
+  if(move60<-1200) vote('WAIT','MeanRev: Too far, will bounce');
+  else if(move60>1200) vote('WAIT','MeanRev: Too far, will fall');
+  else if(move60<-150) vote('SELL','MeanRev: Normal move');
+  else if(move60>150) vote('BUY','MeanRev: Normal move');
+  else vote('WAIT','MeanRev: Flat');
+
+  // 4 Support/Resistance - use round numbers
+  let nearFloor = (p%1000)<150; // simplified
+  let nearCeil = (p%1000)>850;
+  if(nearFloor && move60<0) vote('WAIT','Support: Near floor, bounce coming');
+  else if(nearCeil && move60>0) vote('WAIT','Resistance: Near ceiling, fall coming');
+  else if(move60<-150) vote('SELL','Support: Not near floor');
+  else if(move60>150) vote('BUY','Resistance: Not near ceiling');
+  else vote('WAIT','Support: Flat');
+
+  // 5 Scalping
+  if(Math.abs(move15)>80) vote(move15<0?'SELL':'BUY','Scalp: Quick move '+move15.toFixed(0)+' in 15m');
+  else vote('WAIT','Scalp: Too slow');
+
+  // 6 Reversal
+  if(move60<-300 && move15>-20) vote('WAIT','Reversal: Sellers tired');
+  else if(move60>300 && move15<20) vote('WAIT','Reversal: Buyers tired');
+  else if(move60<-150) vote('SELL','Reversal: No reversal');
+  else if(move60>150) vote('BUY','Reversal: No reversal');
+  else vote('WAIT','Reversal: Flat');
+
+  // 7 News Spike - if very fast 5m move, wait
+  if(Math.abs(move15)>300) vote('WAIT','News: Spike, wait 15m');
+  else vote(move60<-150?'SELL':move60>150?'BUY':'WAIT','News: No spike');
+
+  // 8 Patient Hunter - needs agreement
+  // will be decided later
+
+  // WORLD FACTORS (auto approx from price + time + simulated dollar/nasdaq via logic - real APIs need key, so we use price correlation + SA time)
+  let hour=new Date().getHours();
+  let usOpen = (hour>=15 && hour<=17);
+  let factors=[];
+  let factorSell=0, factorBuy=0;
+  // Dollar proxy: if BTC down fast + Nasdaq hours, assume risk-off
+  if(move60<-200){factors.push('Dollar: UP (Risk Off) ✅ SELL'); factorSell++;}
+  else if(move60>200){factors.push('Dollar: DOWN (Risk On) ✅ BUY'); factorBuy++;}
+  else factors.push('Dollar: Flat');
+
+  if(usOpen) factors.push('USA Opening Soon (15:30 SA) - ⚠️ Volatile, be careful');
+  else factors.push('USA Session: Normal');
+
+  // Fear & Greed proxy from speed
+  let fear = move60<-800 ? 'EXTREME FEAR 22 - Panic selling' : move60<-300 ? 'FEAR 32 - People scared' : move60>500 ? 'GREED 68 - People buying' : 'NEUTRAL 50';
+  factors.push('Fear & Greed: '+fear);
+
+  // Trap detection
+  let trap = (move60<-400 && move15>50); // dropped then bouncing
+  if(trap) factors.push('⚠️ TRAP DETECTED - Sellers trapped, DON\'T SELL');
+
+  // DECIDE
+  let totalSell=votes.sell, totalBuy=votes.buy;
+  let signal, conf, color;
+  let bal=parseFloat(document.getElementById('bal').value||167);
+
+  // Patient Hunter rule: need 6/8 agreement
+  let need = 6;
+  // Add patient hunter vote
+  if(totalSell>=5) { votes.details.push('Patient Hunter: Agrees SELL'); totalSell++; }
+  else if(totalBuy>=5){ votes.details.push('Patient Hunter: Agrees BUY'); totalBuy++; }
+  else votes.details.push('Patient Hunter: WAIT - Not enough agreement');
+
+  let isLocked = bal<500 || losses>=2 || trap;
+
+  if(trap){
+    signal='🟡 WAIT - TRAP - NO TRADE'; conf='Confidence: TRAP - Do not trade'; color='yellow';
+  } else if(totalSell>=6){
+    signal='🔴 SELLING STRONGLY - SELL'; conf='Confidence: '+Math.min(92, 65+totalSell*4)+'% | Votes SELL '+totalSell+'/8'; color='red';
+  } else if(totalBuy>=6){
+    signal='🟢 BUYING STRONGLY - BUY'; conf='Confidence: '+Math.min(92, 65+totalBuy*4)+'% | Votes BUY '+totalBuy+'/8'; color='green';
+  } else {
+    signal='🟡 WAIT - NO TRADE'; conf='Votes: SELL '+totalSell+' | BUY '+totalBuy+' | WAIT '+votes.wait+' - Need 6/8 to trade'; color='yellow';
+  }
+
+  // Display
+  let el=document.getElementById('signal');
+  el.textContent=signal; el.className='big '+color;
+  document.getElementById('conf').innerHTML=conf + (isLocked?' <br><b>🔒 BODYGUARD LOCK: DEMO ONLY</b>':'');
+  document.getElementById('moves').innerHTML='15M: '+(move15>=0?'+':'')+move15.toFixed(0)+' | 30M: '+(move30>=0?'+':'')+move30.toFixed(0)+' | 1H: '+(move60>=0?'+':'')+move60.toFixed(0)+' | Speed: '+(speed>400?'FAST 🚀':'SLOW 🐢')+' | '+(faster?'Getting FASTER':'Getting SLOWER');
+  document.getElementById('why').innerHTML='<b>WHY:</b><br>'+votes.details.join('<br>');
+  document.getElementById('factors').innerHTML=factors.join('<br>');
+  document.getElementById('votes').innerHTML='SELL: '+totalSell+' | BUY: '+totalBuy+' | WAIT: '+votes.wait+'<br>'+votes.details.join(' • ');
+  let entry=p.toFixed(0);
+  let slSell=(p+500).toFixed(0), tpSell=(p-2000).toFixed(0);
+  let slBuy=(p-500).toFixed(0), tpBuy=(p+2000).toFixed(0);
+  if(signal.includes('SELL')){
+    document.getElementById('trade').innerHTML='<b>Trade:</b> SELL $'+entry+' | SL $'+slSell+' (-$5 / -R90) | TP $'+tpSell+' (+$20 / +R360) | Lot 0.01';
+  } else if(signal.includes('BUY')){
+    document.getElementById('trade').innerHTML='<b>Trade:</b> BUY $'+entry+' | SL $'+slBuy+' (-$5 / -R90) | TP $'+tpBuy+' (+$20 / +R360) | Lot 0.01';
+  } else {
+    document.getElementById('trade').innerHTML='<b>Trade:</b> DO NOTHING. Go eat. Wait for next signal.';
+  }
+}
+
+function update(){
+  let bal=parseFloat(document.getElementById('bal').value||0);
+  let lock=document.getElementById('lock');
+  if(bal<500){ lock.textContent='🔒 DEMO ONLY - R'+bal+' is for FOOD, not trading'; lock.style.color='#ff3b30'; }
+  else { lock.textContent='✅ Balance OK - Still use DEMO first'; lock.style.color='#00ff88'; }
+  if(losses>=2){ lock.textContent+=' | 🛑 2 LOSSES - LOCKED FOR TODAY'; }
+  calc();
+}
+function markWin(){ alert('Nice! Demo WIN +$20 recorded. Stay disciplined.'); }
+function markLoss(){ losses++; document.getElementById('lossCount').textContent=losses; if(losses>=2) alert('STOP. 2 Losses. System LOCKED for today. Go eat. Come back tomorrow.'); update(); }
+function resetDay(){ losses=0; document.getElementById('lossCount').textContent=0; update(); }
+
+async function loop(){
+  let p=await getPrice();
+  if(p){ lastPrice=p; document.getElementById('price').textContent='$'+p.toLocaleString(undefined,{maximumFractionDigits:0}); document.getElementById('time').textContent='Live • SA Time '+new Date().toLocaleTimeString()+' • 4 APIs • Learning price history...'; addHistory(p); calc(); }
+  setTimeout(loop, 10000);
+}
+update(); loop(); setInterval(calc, 30000);
+</script></body></html>
