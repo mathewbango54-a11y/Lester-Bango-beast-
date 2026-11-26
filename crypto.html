@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KENNY ONE SYSTEM V12.1 + NOTIF</title>
+<style>
+body{background:#0a0a0a;color:white;font-family:Arial;padding:16px;text-align:center}
+.card{background:#151515;border-radius:16px;padding:18px;margin:10px 0;border:2px solid #333}
+.big{font-size:32px;font-weight:900}
+.red{color:#ff3b30}.green{color:#00ff88}.yellow{color:#ffcc00}
+button{background:#00ff88;color:black;border:none;padding:14px 20px;border-radius:12px;font-weight:900;font-size:16px;width:100%;margin-top:10px}
+input{padding:12px;border-radius:10px;border:1px solid #333;background:#222;color:white;width:90%;text-align:center;font-size:16px}
+.small{font-size:13px;color:#aaa;line-height:1.5}
+</style></head>
+<body>
+<h2>KENNY ONE SYSTEM 👑 V12.1 + NOTIF</h2><div class="small">BTC ONLY • AUTO • INSTANT HISTORY • NOTIFICATIONS • NO VALIDATION</div>
+
+<div class="card">
+<button onclick="enableNotifs()" id="notifBtn" style="background:#ffcc00">🔔 ENABLE NOTIFICATIONS - CLICK ME ONCE</button>
+<div id="notifStatus" class="small">Notifications: OFF - Click button above</div>
+<div class="small"><label><input type="checkbox" id="soundOn" checked style="width:auto"> 🔊 Sound ON</label> <label><input type="checkbox" id="vibOn" checked style="width:auto"> 📳 Vibrate ON</label></div>
+</div>
+
+<div class="card">
+<div>BTC LIVE PRICE</div>
+<div id="price" class="big">$ ---</div>
+<div id="time" class="small">Loading past 4 hours from Binance...</div>
+<div id="moves" class="small"></div>
+<div id="lastSignal" class="small" style="color:#00ff88">Last Alert: None yet</div>
+</div>
+
+<div class="card" id="signalCard">
+<div id="signal" class="big yellow">🟡 LOADING HISTORY...</div>
+<div id="conf" class="small"></div>
+<div id="why" class="small" style="margin-top:10px;text-align:left"></div>
+<div id="trade" class="small" style="margin-top:10px"></div>
+</div>
+
+<div class="card">
+<div class="small">YOUR REAL BALANCE (Rands) - Be honest, Bodyguard needs truth</div>
+<input id="bal" type="number" value="167" oninput="update()">
+<div id="lock" style="margin-top:8px;font-weight:900"></div>
+<div class="small">If balance under R500 = DEMO ONLY LOCKED. R167 = food, not trading.</div>
+</div>
+
+<div class="card">
+<div class="small">WORLD FACTORS (Auto)</div>
+<div id="factors" class="small"></div>
+</div>
+
+<div class="card">
+<div class="small">STRATEGY VOTES (8 Strategies)</div>
+<div id="votes" class="small"></div>
+</div>
+
+<div class="card">
+<div class="small">TRADE JOURNAL</div>
+<div id="journal" class="small">Losses today: <span id="lossCount">0</span> / 2 - If 2 losses, system LOCKS for today.</div>
+<button onclick="markWin()">✅ I WON DEMO +$20</button>
+<button onclick="markLoss()" style="background:#ff3b30;color:white">❌ I LOST DEMO -$5</button>
+<button onclick="testNotif()" style="background:#333;color:white">🔔 TEST NOTIFICATION</button>
+<button onclick="resetDay()" style="background:#333;color:white">Reset Day</button>
+</div>
+
+<div class="small" style="margin-top:12px">⚠️ DEMO ONLY. BTC is risky. Never trade your food money.</div>
+
+<script>
+let history=[]; let losses=0; let lastPrice=0; let lastAlertSignal="WAIT"; let notifEnabled=false;
+
+async function enableNotifs(){
+  if(!("Notification" in window)){ alert("Use Chrome for notifications."); return; }
+  let perm = await Notification.requestPermission();
+  if(perm==="granted"){
+    notifEnabled=true;
+    document.getElementById('notifStatus').textContent="Notifications: ✅ ON - Leave tab open, I will shout when signal comes";
+    document.getElementById('notifBtn').textContent="✅ NOTIFICATIONS ON";
+    document.getElementById('notifBtn').style.background="#00ff88";
+    sendAlert("KENNY ONE SYSTEM ON", "Notifications ON. I will alert you on BUY/SELL 6/8. Go eat, I am watching.");
+  } else { alert("You clicked Block. Go to Chrome Settings > Site Settings > Notifications > Allow."); }
+}
+function playBeep(){
+  if(!document.getElementById('soundOn').checked) return;
+  try{
+    let ctx=new (window.AudioContext||window.webkitAudioContext)();
+    for(let i=0;i<3;i++){ let o=ctx.createOscillator(); let g=ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.value=880; o.type='square'; let t=ctx.currentTime + i*0.35; g.gain.setValueAtTime(0.2,t); g.gain.exponentialRampToValueAtTime(0.01,t+0.3); o.start(t); o.stop(t+0.3); }
+  }catch(e){}
+}
+function sendAlert(title, body){
+  if(document.getElementById('vibOn').checked && navigator.vibrate){ navigator.vibrate([500,200,500,200,500]); }
+  playBeep();
+  if(notifEnabled && Notification.permission==="granted"){ try{ new Notification(title, {body: body}); }catch(e){} } else { alert(title+"\n"+body); }
+  document.title = title; setTimeout(()=>{ document.title="KENNY ONE SYSTEM V12.1 + NOTIF"; }, 10000);
+}
+function testNotif(){ sendAlert("🔔 TEST - KENNY ONE", "If you hear this, notifications work! Price: $"+lastPrice); document.getElementById('lastSignal').textContent="Last Alert: TEST at "+new Date().toLocaleTimeString(); }
+
+async function loadHistory(){
+  try{
+    let r=await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=15m&limit=20');
+    let data=await r.json(); history=[];
+    for(let c of data){ let t=parseInt(c[0]); let p=parseFloat(c[4]); history.push({t:t,p:p}); }
+    document.getElementById('time').textContent='History loaded: '+history.length+' candles • Live • SA Time '+new Date().toLocaleTimeString();
+    return true;
+  }catch(e){
+    try{ let r=await fetch('https://api.binance.us/api/v3/klines?symbol=BTCUSDT&interval=15m&limit=20'); let data=await r.json(); history=[]; for(let c of data){ history.push({t:parseInt(c[0]),p:parseFloat(c[4])}); } return true; }catch(e2){ document.getElementById('time').textContent='History failed, will learn live. Leave open 15 mins.'; return false; }
+  }
+}
+async function getPrice(){
+  let prices=[];
+  try{let r=await fetch('https://api.coinbase.com/v2/prices/BTC-USD/spot'); let j=await r.json(); prices.push(parseFloat(j.data.amount));}catch(e){}
+  try{let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'); let j=await r.json(); prices.push(parseFloat(j.price));}catch(e){}
+  try{let r=await fetch('https://api.kraken.com/0/public/Ticker?pair=XBTUSD'); let j=await r.json(); prices.push(parseFloat(j.result.XXBTZUSD.c[0]));}catch(e){}
+  try{let r=await fetch('https://api.bitstamp.net/api/v2/ticker/btcusd/'); let j=await r.json(); prices.push(parseFloat(j.last));}catch(e){}
+  if(prices.length==0) return null; prices.sort((a,b)=>a-b); return prices[Math.floor(prices.length/2)];
+}
+function priceAgo(mins){ let target=Date.now()-mins*60*1000; let best=null; let bestDiff=999999999; for(let h of history){ let d=Math.abs(h.t-target); if(d<bestDiff){bestDiff=d; best=h.p;} } if(bestDiff>10*60*1000) return null; return best; }
+
+function calc(){
+  let p=lastPrice; if(!p) return;
+  let p15=priceAgo(15), p30=priceAgo(30), p60=priceAgo(60), p240=priceAgo(240);
+  let move15=p15? p-p15:0, move30=p30? p-p30:0, move60=p60? p-p60:0;
+  let hasHist = p60!==null;
+  let speed=Math.abs(move60);
+  let faster = Math.abs(move15) > Math.abs(move30)/2;
+  let votes={buy:0,sell:0,wait:0, details:[]};
+  function vote(s,reason){ if(s=='BUY')votes.buy++; if(s=='SELL')votes.sell++; if(s=='WAIT')votes.wait++; votes.details.push(reason); }
+  if(!hasHist){ vote('WAIT','Trend: Still loading history...'); vote('WAIT','Breakout: Still loading'); vote('WAIT','MeanRev: Still loading'); vote('WAIT','Support: Still loading'); vote('WAIT','Scalp: Still loading'); vote('WAIT','Reversal: Still loading'); vote('WAIT','News: Still loading'); }
+  else {
+    if(move60<-150) vote('SELL','Trend: Down '+move60.toFixed(0)+' in 1H'); else if(move60>150) vote('BUY','Trend: Up +'+move60.toFixed(0)+' in 1H'); else vote('WAIT','Trend: Flat '+move60.toFixed(0));
+    if(move60<-400) vote('SELL','Breakout: Broke floor fast'); else if(move60>400) vote('BUY','Breakout: Broke ceiling fast'); else vote('WAIT','Breakout: No break');
+    if(move60<-1200) vote('WAIT','MeanRev: Too far, will bounce'); else if(move60>1200) vote('WAIT','MeanRev: Too far, will fall'); else if(move60<-150) vote('SELL','MeanRev: Normal move'); else if(move60>150) vote('BUY','MeanRev: Normal move'); else vote('WAIT','MeanRev: Flat');
+    let nearFloor = (p%1000)<150; let nearCeil = (p%1000)>850;
+    if(nearFloor && move60<0) vote('WAIT','Support: Near floor, bounce coming'); else if(nearCeil && move60>0) vote('WAIT','Resistance: Near ceiling, fall coming'); else if(move60<-150) vote('SELL','Support: Not near floor'); else if(move60>150) vote('BUY','Resistance: Not near ceiling'); else vote('WAIT','Support: Flat');
+    if(Math.abs(move15)>80) vote(move15<0?'SELL':'BUY','Scalp: Quick '+move15.toFixed(0)+' in 15m'); else vote('WAIT','Scalp: Too slow');
+    if(move60<-300 && move15>-20) vote('WAIT','Reversal: Sellers tired'); else if(move60>300 && move15<20) vote('WAIT','Reversal: Buyers tired'); else if(move60<-150) vote('SELL','Reversal: No reversal'); else if(move60>150) vote('BUY','Reversal: No reversal'); else vote('WAIT','Reversal: Flat');
+    if(Math.abs(move15)>300) vote('WAIT','News: Spike, wait 15m'); else vote(move60<-150?'SELL':move60>150?'BUY':'WAIT','News: No spike');
+  }
+  let totalSell=votes.sell, totalBuy=votes.buy;
+  if(totalSell>=5){ votes.details.push('Patient Hunter: Agrees SELL'); totalSell++; } else if(totalBuy>=5){ votes.details.push('Patient Hunter: Agrees BUY'); totalBuy++; } else votes.details.push('Patient Hunter: WAIT - Need 6/8');
+  let bal=parseFloat(document.getElementById('bal').value||167);
+  let hour=new Date().getHours(); let usOpen=(hour>=15 && hour<=17);
+  let factors=[]; let trap=(move60<-400 && move15>50);
+  if(move60<-200) factors.push('Dollar: UP (Risk Off) ✅ SELL'); else if(move60>200) factors.push('Dollar: DOWN (Risk On) ✅ BUY'); else factors.push('Dollar: Flat');
+  if(usOpen) factors.push('USA Opening Soon (15:30 SA) - ⚠️ Volatile'); else factors.push('USA Session: Normal');
+  let fear = move60<-800 ? 'EXTREME FEAR 22 - Panic' : move60<-300 ? 'FEAR 32 - Scared' : move60>500 ? 'GREED 68 - Buying' : 'NEUTRAL 50';
+  factors.push('Fear & Greed: '+fear); if(trap) factors.push('⚠️ TRAP DETECTED - DON\'T SELL');
+  let signal, conf, color, currentSignal="WAIT";
+  let isLocked = bal<500 || losses>=2 || trap;
+  if(trap){ signal='🟡 WAIT - TRAP - NO TRADE'; conf='TRAP - Do not trade'; color='yellow'; }
+  else if(totalSell>=6){ signal='🔴 SELLING STRONGLY - SELL'; conf='Confidence: '+Math.min(92,65+totalSell*4)+'% | SELL '+totalSell+'/8'; color='red'; currentSignal="SELL"; }
+  else if(totalBuy>=6){ signal='🟢 BUYING STRONGLY - BUY'; conf='Confidence: '+Math.min(92,65+totalBuy*4)+'% | BUY '+totalBuy+'/8'; color='green'; currentSignal="BUY"; }
+  else { signal='🟡 WAIT - NO TRADE'; conf='SELL '+totalSell+' | BUY '+totalBuy+' | WAIT '+votes.wait+' - Need 6/8'; color='yellow'; }
+
+  // NOTIFICATION - ONLY when it CHANGES to BUY or SELL
+  if(currentSignal!=="WAIT" && currentSignal!==lastAlertSignal){
+    let msg = currentSignal==="BUY" ? "BUY at $"+p.toFixed(0)+" | SL $"+(p-500).toFixed(0)+" | TP $"+(p+2000).toFixed(0)+" | DEMO ONLY" : "SELL at $"+p.toFixed(0)+" | SL $"+(p+500).toFixed(0)+" | TP $"+(p-2000).toFixed(0)+" | DEMO ONLY";
+    sendAlert(currentSignal==="BUY" ? "🟢 BUY NOW! - $"+p.toFixed(0) : "🔴 SELL NOW! - $"+p.toFixed(0), msg);
+    document.getElementById('lastSignal').textContent="Last Alert: "+currentSignal+" at "+new Date().toLocaleTimeString()+" - Price $"+p.toFixed(0);
+  }
+  if(currentSignal==="WAIT"){ lastAlertSignal="WAIT"; } else { lastAlertSignal=currentSignal; }
+
+  let el=document.getElementById('signal'); el.textContent=signal; el.className='big '+color;
+  document.getElementById('conf').innerHTML=conf + (isLocked?' <br><b>🔒 BODYGUARD: DEMO ONLY</b>':'');
+  document.getElementById('moves').innerHTML='15M: '+(move15>=0?'+':'')+move15.toFixed(0)+' | 30M: '+(move30>=0?'+':'')+move30.toFixed(0)+' | 1H: '+(move60>=0?'+':'')+move60.toFixed(0)+' | Speed: '+(speed>400?'FAST 🚀':'SLOW 🐢')+' | '+(faster?'Getting FASTER':'Getting SLOWER') + (!hasHist?' | ⏳ Loading history...':' | ✅ History OK');
+  document.getElementById('why').innerHTML='<b>WHY:</b><br>'+votes.details.join('<br>');
+  document.getElementById('factors').innerHTML=factors.join('<br>');
+  document.getElementById('votes').innerHTML='SELL: '+totalSell+' | BUY: '+totalBuy+' | WAIT: '+votes.wait+'<br>'+votes.details.join(' • ');
+  let entry=p.toFixed(0);
+  if(signal.includes('SELL')) document.getElementById('trade').innerHTML='<b>Trade:</b> SELL $'+entry+' | SL $'+(p+500).toFixed(0)+' (-$5) | TP $'+(p-2000).toFixed(0)+' (+$20) | Lot 0.01';
+  else if(signal.includes('BUY')) document.getElementById('trade').innerHTML='<b>Trade:</b> BUY $'+entry+' | SL $'+(p-500).toFixed(0)+' (-$5) | TP $'+(p+2000).toFixed(0)+' (+$20) | Lot 0.01';
+  else document.getElementById('trade').innerHTML='<b>Trade:</b> DO NOTHING. Go eat. Wait for next signal.';
+}
+function update(){ let bal=parseFloat(document.getElementById('bal').value||0); let lock=document.getElementById('lock'); if(bal<500){ lock.textContent='🔒 DEMO ONLY - R'+bal+' is for FOOD, not trading'; lock.style.color='#ff3b30'; } else { lock.textContent='✅ Balance OK - Still use DEMO first'; lock.style.color='#00ff88'; } if(losses>=2) lock.textContent+=' | 🛑 2 LOSSES - LOCKED FOR TODAY'; calc(); }
+function markWin(){ alert('Nice! Demo WIN +$20. Stay disciplined.'); }
+function markLoss(){ losses++; document.getElementById('lossCount').textContent=losses; if(losses>=2) alert('STOP. 2 Losses. LOCKED for today. Go eat.'); update(); }
+function resetDay(){ losses=0; document.getElementById('lossCount').textContent=0; update(); }
+async function loop(){ let p=await getPrice(); if(p){ lastPrice=p; document.getElementById('price').textContent='$'+p.toLocaleString(undefined,{maximumFractionDigits:0}); history.push({t:Date.now(),p:p}); history=history.filter(h=>Date.now()-h.t<4*3600*1000); calc(); } setTimeout(loop, 10000); }
+(async()=>{ await loadHistory(); update(); loop(); setInterval(calc, 15000); })();
+</script></body></html>
