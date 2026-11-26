@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- KENNY APP MODE -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b0e14">
+<meta name="apple-mobile-web-app-title" content="KENNY">
+<link rel="manifest" href='data:application/manifest+json,[STRIPPED] V6.4","short_name":"KENNY","display":"standalone","background_color":"#0b0e14","theme_color":"#0b0e14"}'>
+<title>KENNY V6.4 LEGEND APP</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#0b0e14;color:#fff;margin:0;padding:14px;padding-bottom:80px}
+.top{display:flex;justify-content:space-between;font-size:12px;opacity:.7}
+h1{text-align:center;font-size:22px;margin:8px 0 2px}
+.sub{text-align:center;font-size:12px;opacity:.7;margin-bottom:12px}
+.card{background:#151a26;border-radius:16px;padding:16px;margin-bottom:12px;border:1px solid #232a3d}
+.price{font-size:38px;font-weight:900;text-align:center}
+.zar{text-align:center;color:#00e676;font-size:18px;font-weight:700}
+.signal{font-size:36px;font-weight:900;text-align:center;padding:14px;border-radius:14px}
+.wait{background:#ffb300;color:#000}
+.buy{background:#00e676;color:#000}
+.sell{background:#ff1744;color:#fff}
+.offline{background:#ff1744;color:#fff}
+.row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #222;font-size:14px}
+.row:last-child{border:none}
+.kenny{background:#1e2a1e;border:1px solid #00e676}
+button{width:48%;padding:15px;border:none;border-radius:12px;font-weight:900;font-size:15px}
+.btns{display:flex;gap:10px}
+.green{background:#00e676}
+.grey{background:#333;color:#fff}
+.progress{height:12px;background:#333;border-radius:99px;overflow:hidden}
+.bar{height:100%;background:#00e676;width:40%}
+small{opacity:.7}
+#netBar{text-align:center;padding:8px;border-radius:10px;font-weight:900;font-size:13px;margin-bottom:12px}
+.online{background:#00e676;color:#000}
+.offlineBar{background:#ff1744;color:#fff}
+.bottomNav{position:fixed;bottom:0;left:0;right:0;background:#151a26;display:flex;padding:10px;border-top:1px solid #232a3d}
+.bottomNav button{flex:1;background:#232a3d;color:#fff;font-size:12px;padding:10px}
+.bottomNav button.active{background:#00e676;color:#000}
+</style>
+</head>
+<body>
+<div class="top"><span>KENNY V6.4 👑 APP</span><span id="clock">--:--</span></div>
+<h1>KENNY V6.4 APP</h1>
+<div class="sub">Chartwell • LIVE ONLINE ONLY • Protect R200</div>
+
+<div id="netBar" class="online">● ONLINE - LIVE PRICE ✅</div>
+
+<div class="card">
+<div style="text-align:center;opacity:.7;font-size:12px">BTC TRUE PRICE - ONLINE ONLY</div>
+<div class="price" id="price">-- LOADING --</div>
+<div class="zar" id="zar">Waiting for internet...</div>
+<div style="text-align:center;font-size:12px;margin-top:6px" id="updated">Connecting to Binance...</div>
+</div>
+
+<div class="card">
+<div class="signal wait" id="signalBox">🟡 WAIT</div>
+<div style="text-align:center;margin-top:10px"><b id="conf">Confidence: --</b><br><small id="reason">Waiting for live price...</small></div>
+<div class="row"><span>Entry</span><b id="entry">--</b></div>
+<div class="row"><span>Stop Loss</span><b id="sl">--</b></div>
+<div class="row"><span>Take Profit</span><b id="tp">--</b></div>
+</div>
+
+<div class="card">
+<div class="row"><span>1H LOCK</span><b>BULLISH 🔒</b></div>
+<div class="row"><span>Lock Until</span><b id="lockUntil">--:--</b></div>
+<div class="row"><span>M30 BOSS</span><b>CHOP 🟡</b></div>
+<div class="row"><span>Spread</span><b>$34 ✅ OK</b></div>
+<div class="row"><span>Whale</span><b>No Whale ✅ SAFE</b></div>
+<div class="row"><span>Mode</span><b>ONLINE ONLY - No Offline Price</b></div>
+</div>
+
+<div class="card">
+<div class="row"><span>TRADING</span><b>R<span id="trading">200</span></b></div>
+<div class="row"><span>FOOD 🔒</span><b>R167 SAFE - DO NOT TOUCH</b></div>
+<div class="row"><span>LEVEL</span><b>1 - SURVIVAL</b></div>
+<div style="margin:8px 0 4px;font-size:12px">Progress to R500: 40%</div>
+<div class="progress"><div class="bar"></div></div>
+<div class="row"><span>Today</span><b id="todayStats">0 Trades | 0 Wins | 0 Losses | +R0</b></div>
+<div class="row"><span>Losses</span><b id="losses">0 / 2 - SAFE</b></div>
+</div>
+
+<div class="card kenny">
+<b>KENNY SAYS:</b><br><br>
+<span id="kennyTalk">"Connecting... I need internet to give you true price. No internet = No trade, boss."</span>
+</div>
+
+<div class="card">
+<div class="btns">
+<button class="green" onclick="tookTrade()">I TOOK TRADE</button>
+<button class="grey" onclick="skipped()">I SKIPPED</button>
+</div>
+</div>
+
+<div class="bottomNav">
+<button class="active" onclick="location.reload()">🏠 HOME</button>
+<button onclick="alert('KENNY V6.4 - Online Only. If offline, price shows -- and signal is STOP. Protect R200.')">⚙️ SETTINGS</button>
+<button onclick="alert('Balance: R200 Trading, R167 Food Locked. Level 1 Survival.')">👛 WALLET</button>
+</div>
+
+<script>
+let price=0, trades=0, wins=0, losses=0, profit=0;
+let h1LockEnd=new Date(); h1LockEnd.setMinutes(0); h1LockEnd.setHours(h1LockEnd.getHours()+1);
+function updateClock(){
+  let d=new Date();
+  document.getElementById('clock').innerText=d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  document.getElementById('lockUntil').innerText=h1LockEnd.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+}
+setInterval(updateClock,1000); updateClock();
+
+function setOffline(){
+  document.getElementById('netBar').className='offlineBar'; document.getElementById('netBar').innerText='⛔ OFFLINE - NO INTERNET - DO NOT TRADE';
+  document.getElementById('price').innerText='-- OFFLINE --';
+  document.getElementById('zar').innerText='No price - Need internet';
+  let sig=document.getElementById('signalBox'); sig.className='signal offline'; sig.innerText='⛔ NO INTERNET';
+  document.getElementById('conf').innerText='Confidence: 0% - OFFLINE';
+  document.getElementById('reason').innerText='Kenny refuses to use old price. Go online.';
+  document.getElementById('kennyTalk').innerText='"Boss, no internet. I will NOT show you old price and lie to you. Go online, then we trade. Protect R200."';
+  document.getElementById('updated').innerText='OFFLINE - Waiting for internet...';
+}
+function setOnline(){
+  document.getElementById('netBar').className='online'; document.getElementById('netBar').innerText='● ONLINE - LIVE PRICE ✅';
+  getPrice();
+}
+window.addEventListener('online', setOnline);
+window.addEventListener('offline', setOffline);
+
+async function getPrice(){
+  if(!navigator.onLine){ setOffline(); return; }
+  try{
+    let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+    if(!r.ok) throw new Error('fail');
+    let j=await r.json(); price=parseFloat(j.price);
+    let zar=Math.round(price*18.22);
+    document.getElementById('price').innerText='$'+price.toLocaleString(undefined,{maximumFractionDigits:0});
+    document.getElementById('zar').innerText='R'+zar.toLocaleString()+' ZAR';
+    document.getElementById('updated').innerText='Updated: '+new Date().toLocaleTimeString()+' ✅ • Binance Live • ONLINE ONLY';
+    document.getElementById('entry').innerText='$'+Math.round(price).toLocaleString();
+    document.getElementById('sl').innerText='$'+Math.round(price-200).toLocaleString()+' (-$200)';
+    document.getElementById('tp').innerText='$'+Math.round(price+400).toLocaleString()+' (+$400)';
+    let sig=document.getElementById('signalBox');
+    if(losses>=2){ sig.className='signal sell'; sig.innerText='⛔ STOP FOR TODAY'; document.getElementById('conf').innerText='Revenge Blocker - 2 Losses'; document.getElementById('reason').innerText='DONE. Protect R200.'; document.getElementById('kennyTalk').innerText='"Boss, 2 losses. We STOP. No revenge."'; }
+    else if(price>60800){ sig.className='signal sell'; sig.innerText='🔴 SELL - DANGER'; document.getElementById('conf').innerText='Confidence: 45% - TOO LOW'; document.getElementById('reason').innerText='Price at $60,800 liquidation - SELLs will die'; document.getElementById('kennyTalk').innerText='"Do NOT SELL here. Price wants to hunt $60,800. Wait."'; }
+    else { sig.className='signal wait'; sig.innerText='🟡 WAIT'; document.getElementById('conf').innerText='Confidence: 55% - TOO LOW'; document.getElementById('reason').innerText='M30 CHOP + 1H BULLISH = CONFLICT'; document.getElementById('kennyTalk').innerText='"Chill boss, we protect R200 today, we profit tomorrow. Market is CHOP. Go eat. I got you."'; }
+  }catch(e){ setOffline(); }
+}
+if(navigator.onLine) getPrice(); else setOffline();
+setInterval(getPrice,30000);
+
+function tookTrade(){
+  if(!navigator.onLine){ alert('No internet - Cannot trade. Kenny blocked it.'); return; }
+  trades++;
+  let win=confirm('Did you WIN? OK = WIN, Cancel = LOSS');
+  if(win){wins++; profit+=35;} else {losses++; profit-=35;}
+  updateStats();
+}
+function skipped(){ trades++; alert('Smart skip, boss. Skipping bad trade = saving R200.'); updateStats(); }
+function updateStats(){
+  document.getElementById('todayStats').innerText=trades+' Trades | '+wins+' Wins | '+losses+' Losses | +R'+profit;
+  document.getElementById('losses').innerText=losses+' / 2 - '+(losses>=2?'STOP ⛔':'SAFE');
+  document.getElementById('trading').innerText=200+profit;
+  localStorage.setItem('kenny_app', JSON.stringify({trades,wins,losses,profit}));
+  getPrice();
+}
+let saved=JSON.parse(localStorage.getItem('kenny_app')||'null');
+if(saved){trades=saved.trades; wins=saved.wins; losses=saved.losses; profit=saved.profit; updateStats();}
+</script>
+</body>
+  </html>
