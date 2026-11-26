@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KENNY 👑 v7 SMART - FINAL</title>
+<style>
+  body{font-family:Arial,sans-serif;background:#0f0f0f;color:white;padding:15px;margin:0}
+  .card{background:#1a1a1a;border:1px solid #333;border-radius:15px;padding:15px;margin-bottom:12px}
+  .gold{color:gold;font-weight:bold}
+  button{width:100%;padding:14px;border:none;border-radius:12px;font-weight:bold;font-size:16px;margin:6px 0;cursor:pointer}
+  .btn-gold{background:gold;color:black}
+  .btn-discord{background:#5865F2;color:white}
+  .btn-green{background:#00c853;color:white}
+  .btn-red{background:#d50000;color:white}
+  .price{font-size:36px;text-align:center;font-weight:bold}
+  .signal{font-size:26px;text-align:center;padding:12px;border-radius:12px;margin:10px 0}
+  .buy{background:#00c853}.sell{background:#d50000}.wait{background:#ffab00;color:black}
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center}
+  .stat{background:#222;padding:10px;border-radius:10px}
+  .stat b{font-size:18px;display:block}
+  small{color:#aaa}
+  .bar{height:10px;background:#333;border-radius:5px;overflow:hidden;margin:8px 0}
+  .fill{height:100%;background:gold;transition:width 0.5s}
+  .lock{ text-align:center; color:gold; font-size:12px; border:1px solid gold; padding:8px; border-radius:10px; margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<div class="lock">🔒 KENNY v7 SMART - FINAL LOCKED VERSION - DO NOT CHANGE CODE - JUST TRADE</div>
+
+<h1 style="text-align:center">KENNY 👑 <span class="gold">v7 SMART FINAL</span></h1>
+<p style="text-align:center"><small>Balance: R200 | Risk: R20 Only | Protect Capital</small></p>
+
+<div class="card">
+  <div class="price" id="priceDisplay">$---</div>
+  <p style="text-align:center">BTC / USD - <span id="liveStatus" style="color:#00ff88">● SMART LIVE</span></p>
+  <p style="text-align:center"><small>Last Update: <span id="lastUpdate">Never</span> | 15m Candles | Auto-refresh 60s</small></p>
+  
+  <div class="grid">
+    <div class="stat"><small>RSI (14)</small><b id="rsiVal">--</b><span id="rsiLabel">--</span></div>
+    <div class="stat"><small>Trend EMA</small><b id="trendVal">--</b><span id="trendLabel">--</span></div>
+    <div class="stat"><small>SMART SCORE</small><b id="scoreVal">-- / 100</b><span id="scoreLabel">--</span></div>
+  </div>
+  <div class="bar"><div class="fill" id="scoreBar" style="width:0%"></div></div>
+
+  <button class="btn-gold" onclick="checkSignal()">🧠 KENNY SMART ANALYZE</button>
+  <div id="signalBox" class="signal wait">WAIT - Tap Analyze</div>
+  <p id="reason" style="text-align:center"></p>
+  <p id="details" style="text-align:center;font-size:13px;color:#ccc"></p>
+  <p style="text-align:center"><small>Resistance: $60,877 | Support: $59,700 | $58,200</small></p>
+</div>
+
+<div class="card">
+  <h3>📱 Discord Alerts</h3>
+  <button class="btn-discord" onclick="sendToDiscord('KENNY v7 FINAL TEST ✅', 'Final Kenny is working! RSI + EMA + Smart Score ON. Locked version.')">🧪 TEST DISCORD</button>
+  <button class="btn-discord" onclick="toggleAuto()">🔔 Auto Discord: <span id="autoStatus">OFF</span></button>
+  <p><small>Auto = Only strong signals Score > 65 or < 35</small></p>
+</div>
+
+<div class="card">
+  <h3>💰 Trade Log - FINAL</h3>
+  <p>Balance: <span class="gold" id="balance">R200</span> | Win Rate: <span id="winRate">--</span> | Trades: <span id="tradeCount">0</span></p>
+  <button class="btn-green" onclick="logTrade('WIN')">✅ I WON +R20</button>
+  <button class="btn-red" onclick="logTrade('LOSS')">❌ I LOST -R20</button>
+  <button onclick="resetBalance()" style="background:#333;color:white">Reset to R200</button>
+  <div id="log" style="margin-top:10px;font-size:14px"></div>
+</div>
+
+<div class="card">
+  <h3>📖 KENNY FINAL RULES - READ EVERY MORNING</h3>
+  <p>1. Score > 65 + RSI < 70 = ONLY time to BUY<br>
+    2. Score < 35 = DO NOT BUY<br>
+    3. RSI > 70 = OVERBOUGHT - WAIT, don't chase<br>
+    4. RSI < 30 = OVERSOLD - Watch for bounce<br>
+    5. EMA20 > EMA50 = Bullish, only BUYS<br>
+    6. Max Risk R20 per trade. NEVER more.<br>
+    7. 2 Losses in a row = STOP FOR TODAY. No excuses.<br>
+    8. Protect R200. Survival > Profit.</p>
+</div>
+
+<script>
+// ============================================================
+// 🔒 KENNY v7 SMART - FINAL LOCKED VERSION
+// DO NOT CHANGE ANY CODE BELOW EXCEPT WEBHOOK LINE
+// PASTE YOUR WEBHOOK IN THE LINE BELOW - ONLY YOU SEE THIS FILE
+// ============================================================
+const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1575551429404397729/gSPdHAGppwfFhgk1TcO67pb-DLquvL1Jmb4UPH2gkp3eHtkECCcenh31X32lxC8O09-O";
+// ============================================================
+// END OF SETUP - DO NOT EDIT BELOW
+// ============================================================
+
+let balance = 200, wins = 0, totalTrades = 0, lastSignal = "", autoDiscord = false, lossesInRow = 0;
+
+function toggleAuto(){
+  autoDiscord = !autoDiscord;
+  document.getElementById('autoStatus').innerText = autoDiscord ? 'ON ✅' : 'OFF';
+  if(autoDiscord) sendToDiscord('KENNY 👑 v7 FINAL AUTO ON', 'Final Smart Kenny ON. Locked version. I will only alert on strong signals.');
+}
+
+async function sendToDiscord(title, message, color = 16766720){
+  if(!DISCORD_WEBHOOK || DISCORD_WEBHOOK.includes("PASTE")){ alert("Boss, paste your webhook first. Find DISCORD_WEBHOOK line."); return; }
+  try{
+    await fetch(DISCORD_WEBHOOK, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ username:'KENNY 👑 SMART FINAL', avatar_url:'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+        embeds:[{ title:title, description:message, color:color, timestamp:new Date().toISOString(), footer:{text:'KENNY v7 SMART FINAL - Balance R'+balance} }] })
+    });
+  }catch(e){ alert("Discord failed: "+e); }
+}
+
+function calcRSI(closes, period=14){
+  let gains=0, losses=0;
+  for(let i=closes.length-period; i<closes.length; i++){
+    let diff = closes[i] - closes[i-1];
+    if(diff>=0) gains+=diff; else losses-=diff;
+  }
+  let avgGain = gains/period, avgLoss = losses/period;
+  if(avgLoss===0) return 100;
+  let rs = avgGain/avgLoss;
+  return 100 - (100/(1+rs));
+}
+function calcEMA(closes, period){
+  let k = 2/(period+1);
+  let ema = closes[0];
+  for(let i=1;i<closes.length;i++) ema = closes[i]*k + ema*(1-k);
+  return ema;
+}
+
+async function checkSignal(){
+  try{
+    document.getElementById('liveStatus').innerText = "● ANALYZING 50 CANDLES...";
+    let res = await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=15m&limit=50');
+    let klines = await res.json();
+    let closes = klines.map(k => parseFloat(k[4]));
+    let price = closes[closes.length-1];
+    let prevPrice = closes[closes.length-2];
+    let rsi = calcRSI(closes, 14);
+    let ema20 = calcEMA(closes, 20);
+    let ema50 = calcEMA(closes, 50);
+    let trendBullish = ema20 > ema50;
+    let priceUp = price > prevPrice;
+    let aboveSupport = price > 59700;
+    let belowResistance = price < 60877;
+
+    let score = 50;
+    if(trendBullish) score += 15; else score -= 15;
+    if(price > ema20) score += 10; else score -= 10;
+    if(rsi > 30 && rsi < 65) score += 10;
+    if(rsi >= 70) score -= 20;
+    if(rsi <= 30) score += 10;
+    if(priceUp) score += 5; else score -= 5;
+    if(aboveSupport) score += 5;
+    if(!belowResistance) score -= 15;
+    score = Math.max(0, Math.min(100, Math.round(score)));
+
+    document.getElementById('priceDisplay').innerText = "$" + Math.round(price).toLocaleString();
+    document.getElementById('lastUpdate').innerText = new Date().toLocaleTimeString();
+    document.getElementById('liveStatus').innerText = "● SMART LIVE FINAL";
+    document.getElementById('rsiVal').innerText = rsi.toFixed(1);
+    document.getElementById('rsiLabel').innerText = rsi > 70 ? "🔴 Overbought" : rsi < 30 ? "🟢 Oversold" : "🟡 Healthy";
+    document.getElementById('rsiLabel').style.color = rsi > 70 ? "#ff4444" : rsi < 30 ? "#00ff88" : "#ffcc00";
+    document.getElementById('trendVal').innerText = trendBullish ? "BULLISH 📈" : "BEARISH 📉";
+    document.getElementById('trendVal').style.color = trendBullish ? "#00ff88" : "#ff4444";
+    document.getElementById('trendLabel').innerText = `EMA20 $${Math.round(ema20).toLocaleString()} vs EMA50 $${Math.round(ema50).toLocaleString()}`;
+    document.getElementById('scoreVal').innerText = score + " / 100";
+    document.getElementById('scoreBar').style.width = score + "%";
+    document.getElementById('scoreBar').style.background = score > 65 ? "#00c853" : score < 35 ? "#d50000" : "gold";
+    document.getElementById('scoreLabel').innerText = score > 65 ? "STRONG" : score < 35 ? "WEAK" : "NEUTRAL";
+
+    let signal="", reason="", details="", color=16766720, css="wait";
+
+    if(score >= 65 && rsi < 70 && price < 60877){
+      signal = "✅ SMART BUY - " + score + "/100";
+      reason = `Strong! Trend Bullish, RSI ${rsi.toFixed(0)} healthy, Score ${score}. Target $60,877. Stop $59,700. Risk R20 only.`;
+      details = `EMA20 > EMA50 confirms bulls. Price above support.`;
+      css="buy"; color=65280;
+    } else if(score <= 35){
+      signal = "🔴 SMART SELL / WAIT - " + score + "/100";
+      reason = `Weak! Score ${score}, RSI ${rsi.toFixed(0)}. Bears in control. Don't buy. Wait for $58,200 bounce.`;
+      details = `EMA20 < EMA50 or Overbought. Protect capital.`;
+      css="sell"; color=16711680;
+    } else if(rsi >= 70){
+      signal = "⚠️ OVERBOUGHT - WAIT";
+      reason = `RSI ${rsi.toFixed(0)} = TOO HOT! Everyone already bought. Do NOT chase. Wait for dip to $60,300.`;
+      details = `Smart Kenny says: Patience = Profit.`;
+      css="wait"; color=16711680;
+    } else {
+      signal = "⏳ SMART WAIT - " + score + "/100";
+      reason = `Score ${score} neutral. RSI ${rsi.toFixed(0)}. No edge. Wait for breakout above $60,877 or dip to $59,700.`;
+      details = `No trade is also a trade. Protect R200.`;
+      css="wait"; color=16766720;
+    }
+
+    let box = document.getElementById('signalBox');
+    box.innerText = signal; box.className = "signal " + css;
+    document.getElementById('reason').innerText = reason;
+    document.getElementById('details').innerText = details;
+
+    if(autoDiscord && signal !== lastSignal && (score >= 65 || score <= 35 || rsi >= 70)){
+      sendToDiscord('KENNY 👑 SMART FINAL: ' + signal, `BTC $${Math.round(price).toLocaleString()}\nRSI ${rsi.toFixed(1)} | Score ${score}/100 | Trend ${trendBullish?'BULLISH':'BEARISH'}\n${reason}\nBalance: R${balance}`, color);
+      lastSignal = signal;
+    }
+  } catch(e){
+    document.getElementById('liveStatus').innerText = "● OFFLINE - Check Internet";
+    alert("Kenny Smart failed: " + e);
+  }
+}
+
+function logTrade(result){
+  totalTrades++;
+  if(result==='WIN'){ balance+=20; wins++; lossesInRow=0; } else { balance-=20; lossesInRow++; }
+  document.getElementById('balance').innerText = "R"+balance;
+  document.getElementById('winRate').innerText = totalTrades>0 ? Math.round((wins/totalTrades)*100)+"%" : "--";
+  document.getElementById('tradeCount').innerText = totalTrades;
+  let logDiv = document.getElementById('log');
+  logDiv.innerHTML = "<div>"+new Date().toLocaleTimeString()+" - "+result+" - Balance R"+balance+"</div>" + logDiv.innerHTML;
+  if(lossesInRow>=2){ alert("KENNY SAYS STOP! 2 losses. Close app."); sendToDiscord('KENNY 🛑 STOP - 2 LOSSES', 'Boss 2 losses. STOP. Balance R'+balance, 16711680); }
+}
+function resetBalance(){ balance=200; wins=0; totalTrades=0; lossesInRow=0; document.getElementById('balance').innerText="R200"; document.getElementById('winRate').innerText="--"; document.getElementById('tradeCount').innerText="0"; document.getElementById('log').innerHTML=""; }
+
+setInterval(checkSignal, 60000);
+checkSignal();
+</script>
+</body>
+  </html>
