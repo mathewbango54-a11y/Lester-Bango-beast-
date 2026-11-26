@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KENNY 👑 v1 ORIGINAL GOLD</title>
+<style>
+  body{font-family:Arial,sans-serif;background:#0f0f0f;color:white;padding:15px;margin:0}
+  .card{background:#1a1a1a;border:1px solid gold;border-radius:15px;padding:15px;margin-bottom:12px}
+  .gold{color:gold;font-weight:bold}
+  button{width:100%;padding:14px;border:none;border-radius:12px;font-weight:bold;font-size:16px;margin:6px 0;cursor:pointer}
+  .btn-gold{background:gold;color:black}
+  .btn-discord{background:#5865F2;color:white}
+  .btn-green{background:#00c853;color:white}
+  .btn-red{background:#d50000;color:white}
+  input{width:100%;padding:12px;border-radius:10px;border:1px solid #444;background:#222;color:white;font-size:16px;box-sizing:border-box}
+  .price{font-size:36px;text-align:center;font-weight:bold;color:gold}
+  .signal{font-size:28px;text-align:center;padding:12px;border-radius:12px;margin:10px 0}
+  .buy{background:#00c853}.sell{background:#d50000}.wait{background:#ffab00;color:black}
+  small{color:#aaa}
+</style>
+</head>
+<body>
+
+<h1 style="text-align:center">KENNY 👑 <span class="gold">v1 GOLD</span></h1>
+<p style="text-align:center"><small>Balance: R200 | Risk: R20 Only | Protect Capital</small></p>
+
+<div class="card">
+  <div class="price" id="priceDisplay">$60,406</div>
+  <p style="text-align:center">BTC / USD</p>
+  <label>Enter Current BTC Price:</label>
+  <input type="number" id="priceInput" value="60406" placeholder="e.g. 60406">
+  <button class="btn-gold" onclick="checkSignal()">🔍 CHECK SIGNAL - KENNY ANALYZE</button>
+  <div id="signalBox" class="signal wait">WAIT - Enter Price & Check</div>
+  <p id="reason" style="text-align:center"></p>
+  <p style="text-align:center"><small>Resistance: $60,877 | Support: $59,700 | $58,200</small></p>
+</div>
+
+<div class="card">
+  <h3>📱 Discord Alerts</h3>
+  <button class="btn-discord" onclick="sendToDiscord('KENNY TEST ✅', 'Boss, Discord is working!')">🧪 TEST DISCORD</button>
+  <button class="btn-discord" onclick="toggleAuto()">🔔 Auto Discord: <span id="autoStatus">OFF</span></button>
+</div>
+
+<div class="card">
+  <h3>💰 Trade Log</h3>
+  <p>Balance: <span class="gold" id="balance">R200</span></p>
+  <button class="btn-green" onclick="logTrade('WIN')">✅ I WON +R20</button>
+  <button class="btn-red" onclick="logTrade('LOSS')">❌ I LOST -R20</button>
+  <button onclick="resetBalance()" style="background:#333;color:white">Reset to R200</button>
+  <div id="log" style="margin-top:10px;font-size:14px"></div>
+</div>
+
+<div class="card">
+  <h3>📖 KENNY RULES</h3>
+  <p>1. Never risk more than R20 per trade<br>
+    2. If 2 losses in a row, STOP for today<br>
+    3. Never trade when angry / chasing loss<br>
+    4. Resistance $60,877 = Ceiling, don't BUY blind there<br>
+    5. Support $59,700 = Floor, watch for bounce</p>
+</div>
+
+<script>
+// PASTE YOUR WEBHOOK HERE - ONLY YOU
+const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1575551429404397729/gSPdHAGppwfFhgk1TcO67pb-DLquvL1Jmb4UPH2gkp3eHtkECCcenh31X32lxC8O09-O";
+
+let balance = 200;
+let lastSignal = "";
+let autoDiscord = false;
+let lossesInRow = 0;
+
+function toggleAuto(){
+  autoDiscord = !autoDiscord;
+  document.getElementById('autoStatus').innerText = autoDiscord ? 'ON ✅' : 'OFF';
+}
+
+async function sendToDiscord(title, message){
+  if(!DISCORD_WEBHOOK || DISCORD_WEBHOOK.includes("PASTE")){
+    alert("Paste your webhook first boss");
+    return;
+  }
+  try{
+    await fetch(DISCORD_WEBHOOK, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        username: 'KENNY 👑',
+        embeds: [{ title: title, description: message, color: 16766720, timestamp: new Date().toISOString() }]
+      })
+    });
+  } catch(e){ alert("Discord failed: " + e); }
+}
+
+function checkSignal(){
+  let price = parseFloat(document.getElementById('priceInput').value);
+  if(!price){ alert("Enter price first boss"); return; }
+  document.getElementById('priceDisplay').innerText = "$" + price.toLocaleString();
+
+  let signal = "", reason = "", css = "wait";
+
+  if(price >= 60877){
+    signal = "⚠️ WAIT / SELL ZONE"; reason = "Price at Resistance $60,877 ceiling. Do NOT buy blind. Wait for pullback or break.";
+    css = "wait";
+  } else if(price >= 60300 && price < 60877){
+    signal = "✅ BUY 75% - BULLISH"; reason = "Above $60,300. M30 + 1H BULLISH. Target $60,877. Stop Loss $59,700. Risk R20 only.";
+    css = "buy";
+  } else if(price >= 59700 && price < 60300){
+    signal = "⏳ WAIT - CHOPPY"; reason = "Between Support $59,700 and $60,300. No clear trade. Wait for breakout.";
+    css = "wait";
+  } else if(price >= 58200 && price < 59700){
+    signal = "🔴 SELL / WAIT"; reason = "Below Support $59,700. Bearish. Don't catch falling knife. Wait for $58,200 bounce.";
+    css = "sell";
+  } else {
+    signal = "🟢 BUY BOUNCE?"; reason = "At $58,200 strong support. Watch for bounce, but confirm first.";
+    css = "buy";
+  }
+
+  let box = document.getElementById('signalBox');
+  box.innerText = signal;
+  box.className = "signal " + css;
+  document.getElementById('reason').innerText = reason;
+
+  if(autoDiscord && signal !== lastSignal){
+    sendToDiscord('KENNY 👑 SIGNAL: ' + signal, 'BTC $' + price.toLocaleString() + '\n' + reason + '\nBalance: R' + balance);
+    lastSignal = signal;
+  }
+}
+
+function logTrade(result){
+  if(result === 'WIN'){ balance += 20; lossesInRow = 0; }
+  else { balance -= 20; lossesInRow++; }
+  document.getElementById('balance').innerText = "R" + balance;
+  let logDiv = document.getElementById('log');
+  logDiv.innerHTML = "<div>" + new Date().toLocaleTimeString() + " - " + result + " - Balance R" + balance + "</div>" + logDiv.innerHTML;
+  if(lossesInRow >= 2){
+    alert("KENNY SAYS STOP! 2 losses in a row. Close app. Come back tomorrow.");
+  }
+}
+
+function resetBalance(){
+  balance = 200; lossesInRow = 0;
+  document.getElementById('balance').innerText = "R200";
+  document.getElementById('log').innerHTML = "";
+}
+</script>
+</body>
+  </html>
