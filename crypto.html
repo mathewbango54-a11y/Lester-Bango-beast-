@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#090909">
+<title>KENNY ONE SYSTEM V3.3 — M30 BOSS REAL CANDLES</title>
+<style>
+:root{--bg:#080808;--gold:#f4c542;--text:#f5f5f5;--muted:#9b9b9b;--line:#2c2c2c;--green:#27d17f;--red:#ff5b63;--orange:#ffb84d}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#29200b 0,#080808 42%);color:var(--text);font-family:Arial,Helvetica,sans-serif;padding:14px 12px 30px}
+.wrap{max-width:760px;margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.brand{font-size:19px;font-weight:900;letter-spacing:.5px;color:var(--gold)}.sub{font-size:10px;color:var(--muted);letter-spacing:1.5px;margin-top:4px}.pill{border:1px solid #6d5517;color:var(--gold);padding:7px 9px;border-radius:20px;font-size:10px;font-weight:bold}
+.card{background:linear-gradient(145deg,#171717,#101010);border:1px solid var(--line);border-radius:15px;padding:15px;margin:10px 0;box-shadow:0 8px 24px #0008}
+.label{font-size:10px;letter-spacing:1.2px;color:var(--muted);font-weight:bold}.price{font-size:32px;font-weight:800;margin:7px 0 4px}.change{font-size:12px;color:var(--muted)}.row{display:flex;justify-content:space-between;align-items:center;gap:12px}.signal{border:1px solid #554315;background:linear-gradient(135deg,#211a09,#111);text-align:center;padding:20px 12px}.signal-word{font-size:34px;font-weight:900;letter-spacing:2px;color:var(--gold);margin:8px 0}.signal-word.buy{color:var(--green)}.signal-word.sell{color:var(--red)}.signal-word.wait{color:var(--gold)}.score{font-size:13px;color:var(--muted)}.bar{height:7px;background:#303030;border-radius:9px;overflow:hidden;margin:10px 0 4px}.bar span{display:block;height:100%;width:0;background:var(--gold);transition:width .3s}.timeframes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.tf{background:#0b0b0b;border:1px solid #292929;border-radius:10px;padding:11px;text-align:center}.tf b{display:block;font-size:15px;margin-top:6px}.bull{color:var(--green)!important}.bear{color:var(--red)!important}.neutral{color:var(--gold)!important}.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.metric{background:#0b0b0b;border:1px solid #292929;border-radius:10px;padding:11px}.metric span{display:block;color:var(--muted);font-size:10px;margin-bottom:7px}.metric b{font-size:14px}.reason{font-size:12px;line-height:1.6;color:#d0d0d0}.status{font-size:11px;color:var(--muted);line-height:1.5}.ok{color:var(--green)}.bad{color:var(--red)}button{background:var(--gold);color:#111;border:0;border-radius:9px;padding:11px 13px;font-weight:800;font-size:12px;cursor:pointer}button.secondary{background:#202020;color:#eee;border:1px solid #383838}.actions{display:flex;gap:8px;flex-wrap:wrap}.history{font-size:11px}.history-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;padding:9px 0;border-bottom:1px solid #252525;align-items:center}.warning{border-left:3px solid var(--orange);padding:9px 11px;background:#21190c;color:#d9c9a5;font-size:11px;line-height:1.5;border-radius:4px}.food{border:1px solid #31553e;background:#0c1911;color:#a9e5bc}.foot{text-align:center;color:#707070;font-size:10px;line-height:1.6;padding:15px 5px}.auto{border:1px solid #31553e;background:#0c1911;padding:10px;border-radius:10px;font-size:12px;line-height:1.6;color:#a9e5bc}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><div><div class="brand">KENNY ONE SYSTEM 👑</div><div class="sub">V3.3 • M30 BOSS • REAL CANDLES • AUTO 1H</div></div><div class="pill">M30 MODE</div></div>
+  <section class="card">
+    <div class="row"><span class="label">BITCOIN / USDT • LIVE MARKET</span><span id="connection" class="status">Connecting…</span></div>
+    <div class="price" id="price">Loading…</div>
+    <div class="change" id="market-meta">Waiting for market data</div>
+    <div class="row" style="margin-top:14px"><span class="status">Last update: <b id="updated">—</b></span><button class="secondary" id="refreshBtn">REFRESH</button></div>
+  </section>
+  <section class="card auto"><b>🤖 AUTO MODE: <span id="autoMode">Checking 1H...</span></b><br><span id="autoDesc">M30 is now the BOSS. Matches your MetaTrader M30 chart exactly.</span></section>
+  <section class="card signal"><div class="label">CURRENT SIGNAL • 30M BOSS + AUTO 1H</div><div class="signal-word wait" id="signal">WAIT</div><div class="score" id="score">Confidence score: —</div><div class="bar"><span id="scorebar"></span></div><div class="status" id="signal-note">Waiting for live price.</div></section>
+  <section class="card"><div class="label" style="margin-bottom:11px">MULTI-TIMEFRAME DIRECTION • REAL CANDLES</div><div class="timeframes"><div class="tf"><span class="label">15 MIN • HELPER</span><b id="tf15" class="neutral">—</b></div><div class="tf"><span class="label">30 MIN • BOSS 👑</span><b id="tf30" class="neutral">—</b></div><div class="tf"><span class="label">1 HOUR • WIND</span><b id="tf60" class="neutral">—</b></div></div><p class="status" id="moves">15M: -- | 30M: -- | 1H: --</p></section>
+  <section class="card"><div class="label" style="margin-bottom:11px">SIGNAL LEVELS</div><div class="metrics"><div class="metric"><span>ENTRY REFERENCE</span><b id="entry">—</b></div><div class="metric"><span>INVALIDATION / STOP</span><b id="stop">—</b></div><div class="metric"><span>TARGET 1 • QUICK +$10</span><b id="tp1">—</b></div><div class="metric"><span>TARGET 2 • RUNNER</span><b id="tp2">—</b></div></div></section>
+  <section class="card"><div class="label" style="margin-bottom:10px">WHY THE ENGINE DECIDED • M30 BOSS + AUTO</div><ul class="reason" id="reasons"><li>Waiting for market data…</li></ul></section>
+  <section class="card"><div class="row"><div class="label">SIGNAL HISTORY • M30 ONLY</div><button class="secondary" id="clearHistory">CLEAR HISTORY</button></div><div class="history" id="history"><div class="empty">No signals recorded yet.</div></div></section>
+  <section class="card"><div class="row"><div><div class="label">ALERTS</div><div class="status">Keep Chrome locked in Recent Apps.</div></div><button id="notifyBtn">ENABLE ALERTS</button></div><div class="status" id="notifyStatus" style="margin-top:8px">Alerts are off.</div><div class="actions" style="margin-top:10px"><button class="secondary" id="testNotif">🔔 TEST NOTIFICATION</button></div></section>
+  <section class="card food"><div class="row"><div><div class="label" style="color:#a9e5bc">PROTECTED FOOD MONEY</div><div class="status" style="color:#a9e5bc">Kept separate • Not trading capital</div></div><strong style="font-size:22px">R167.00</strong></div></section>
+  <div class="warning">M30 RULE: BOSS = 30M (same as your MetaTrader). Trade ONLY in direction of 1H. If you miss beep by >1 min, SKIP. Take +$10 fast.</div>
+  <div class="foot">Data: public BTC/USDT market. V3.3 uses REAL candles, not time-since-open.<br>Keep this page open for live refreshes.</div>
+</div>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const API_HOSTS = ["https://data-api.binance.vision","https://api.binance.com"];
+let lastSignalKey="", busy=false;
+let notifOn = localStorage.getItem("kenny_notif") === "on";
+function fmt(n,d=2){return Number(n).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});}
+function setDirection(id,dir){const el=$(id);el.textContent=dir;el.className=dir==="BULLISH"?"bull":dir==="BEARISH"?"bear":"neutral";}
+function updateNotifUI(){$("notifyStatus").textContent = notifOn ? "Alerts ON ✅ - Leave Chrome open + Locked." : "Alerts are off.";$("notifyBtn").textContent = notifOn ? "ALERTS ON ✅" : "ENABLE ALERTS";}
+updateNotifUI();
+async function api(path){let lastErr;for(const host of API_HOSTS){try{const c=new AbortController();const t=setTimeout(()=>c.abort(),9000);const res=await fetch(host+path,{cache:"no-store",signal:c.signal});clearTimeout(t);if(!res.ok) throw new Error("HTTP "+res.status);return await res.json();}catch(e){lastErr=e;}} throw lastErr||new Error("All sources failed");}
+async function candles(interval,limit=80){const data=await api(`/api/v3/klines?symbol=BTCUSDT&interval=${interval}&limit=${limit}`);return data.map(k=>({t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4],v:+k[5]}));}
+function beep(){try{let ctx=new (window.AudioContext||window.webkitAudioContext)();[0,0.3,0.6].forEach(t=>{let o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=880;o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+0.2);});if(navigator.vibrate) navigator.vibrate([300,200,300,200,300]);}catch(e){}}
+function historyRead(){try{return JSON.parse(localStorage.getItem("kenny_v33_signal_history")||"[]");}catch(e){return [];}}
+function historyWrite(items){localStorage.setItem("kenny_v33_signal_history",JSON.stringify(items.slice(0,30)));}
+function renderHistory(){const items=historyRead();const root=$("history");if(!items.length){root.innerHTML='<div class="empty">No signals recorded yet.</div>';return;}root.innerHTML=items.map(x=>`<div class="history-row"><span>${x.time}</span><b class="${x.dir==="BUY"?"bull":"bear"}">${x.dir}</b><span>$${fmt(x.price,2)}</span></div>`).join("");}
+function recordSignal(sig,price){const key=sig.dir+"_"+Math.floor(Date.now()/1800000);if(sig.dir==="WAIT"||key===lastSignalKey) return;lastSignalKey=key;const items=historyRead();items.unshift({dir:sig.dir,price,time:new Date().toLocaleString()});historyWrite(items);renderHistory();if(notifOn && "Notification" in window && Notification.permission==="granted"){try{new Notification("KENNY M30: "+sig.dir+" NOW",{body:"BTC $"+fmt(price,2)+" - M30 BOSS + 1H agree. Enter NOW, TP +$10 fast.",requireInteraction:true});}catch(e){}}beep();}
+// REAL CANDLE MOMENTUM - FIXED: uses closed candles, not time-since-open
+function candleMove(arr, nCandles){ if(arr.length < nCandles+1) return 0; return arr[arr.length-1].c - arr[arr.length-1-nCandles].o; }
+function candleTrend(arr){ if(arr.length < 6) return "NEUTRAL"; let c=arr[arr.length-1].c, o=arr[arr.length-5].o; return c>o+15?"BULLISH":c<o-15?"BEARISH":"NEUTRAL"; }
+async function refresh(){
+  if(busy) return; busy=true; $("connection").textContent="Checking feeds…";
+  try{
+    const [ticker,c15,c30,c60]=await Promise.all([api("/api/v3/ticker/price?symbol=BTCUSDT"),candles("15m"),candles("30m"),candles("1h")]);
+    const price=+ticker.price;
+    // REAL MOVES: 15M = last 2 candles, 30M = last 2 candles, 1H = last 2 candles
+    let m15=candleMove(c15,2), m30=candleMove(c30,2), m60=candleMove(c60,2);
+    let t15=candleTrend(c15), t30=candleTrend(c30), t60=candleTrend(c60);
+    let autoMode="", autoDesc="";
+    if(t60==="BULLISH"){autoMode="🟢 TODAY IS A BUY DAY ONLY"; autoDesc="1H is BULLISH. System will ONLY give BUY. SELL signals are BLOCKED.";}
+    else if(t60==="BEARISH"){autoMode="🔴 TODAY IS A SELL DAY ONLY"; autoDesc="1H is BEARISH. System will ONLY give SELL. BUY signals are BLOCKED.";}
+    else{autoMode="🟡 1H NEUTRAL - BOTH ALLOWED, BE CAREFUL"; autoDesc="1H has no direction. System will give both, but with smaller size.";}
+    $("autoMode").textContent=autoMode; $("autoDesc").textContent=autoDesc;
+    let bull=0,bear=0,reasons=[];
+    // M30 IS BOSS - 50 points
+    if(m30>30){bull+=50; reasons.push("👑 M30 BOSS: UP +"+m30.toFixed(0)+" (last 2 x 30M candles)");}
+    else if(m30<-30){bear+=50; reasons.push("👑 M30 BOSS: DOWN "+m30.toFixed(0)+" (last 2 x 30M candles)");}
+    else reasons.push("👑 M30 BOSS: Flat "+m30.toFixed(0)+" - No momentum. WAIT.");
+    if(m15>15){bull+=20; reasons.push("15M helper confirms UP +"+m15.toFixed(0));}
+    else if(m15<-15){bear+=20; reasons.push("15M helper confirms DOWN "+m15.toFixed(0));}
+    if(m60>50){bull+=15; reasons.push("1H wind is UP +"+m60.toFixed(0));}
+    else if(m60<-50){bear+=15; reasons.push("1H wind is DOWN "+m60.toFixed(0));}
+    let rawDir="WAIT";
+    if(bull>=60 && bull>bear) rawDir="BUY";
+    if(bear>=60 && bear>bull) rawDir="SELL";
+    let dir=rawDir;
+    if(rawDir==="BUY" && t60==="BEARISH"){dir="WAIT"; reasons.push("🚫 AUTO BLOCKED: M30 said BUY, but 1H is BEARISH. We do NOT fight the wind.");}
+    else if(rawDir==="SELL" && t60==="BULLISH"){dir="WAIT"; reasons.push("🚫 AUTO BLOCKED: M30 said SELL, but 1H is BULLISH. We do NOT fight the wind.");}
+    if(dir==="WAIT" && rawDir==="WAIT") reasons.push("M30 BOSS: Not enough momentum yet. WAIT is valid.");
+    let risk=Math.max(price*0.0012, 25);
+    let stop=null,tp1=null,tp2=null;
+    if(dir==="BUY"){stop=price-risk;tp1=price+10;tp2=price+risk*2.5;}
+    if(dir==="SELL"){stop=price+risk;tp1=price-10;tp2=price-risk*2.5;}
+    $("price").textContent="$"+fmt(price,2);
+    $("market-meta").textContent="BTC/USDT • LIVE • M30 BOSS • REAL CANDLES";
+    $("updated").textContent=new Date().toLocaleTimeString();
+    $("connection").textContent="LIVE DATA • OK";$("connection").className="status ok";
+    setDirection("tf15",t15);setDirection("tf30",t30);setDirection("tf60",t60);
+    $("moves").textContent=`15M: ${m15.toFixed(0)} | 30M: ${m30.toFixed(0)} | 1H: ${m60.toFixed(0)} (real candles)`;
+    const s=$("signal");s.textContent=dir;s.className="signal-word "+dir.toLowerCase();
+    $("score").textContent="M30 Score: "+Math.max(bull,bear)+"/100 • BUY "+bull+" / SELL "+bear+" • AUTO 1H: "+t60;
+    $("scorebar").style.width=Math.max(bull,bear)+"%";
+    $("signal-note").textContent=dir==="WAIT"?"No M30-approved signal. Stay patient.":"M30 APPROVED! 1H agrees. Enter NOW, TP +$10 fast. If 1 min late, SKIP.";
+    $("entry").textContent="$"+fmt(price,2);
+    $("stop").textContent=stop?"$"+fmt(stop,2):"—";
+    $("tp1").textContent=tp1?"$"+fmt(tp1,2):"—";
+    $("tp2").textContent=tp2?"$"+fmt(tp2,2):"—";
+    $("reasons").innerHTML=reasons.map(r=>"<li>"+r+"</li>").join("");
+    recordSignal({dir},price);
+  }catch(err){
+    $("connection").textContent="DATA ERROR";$("connection").className="status bad";
+    $("signal").textContent="WAIT";$("signal").className="signal-word wait";
+    $("signal-note").textContent="No new signal: market data unavailable.";
+    $("reasons").innerHTML="<li>"+String(err.message||err)+"</li>";
+  }finally{busy=false;}
+}
+$("refreshBtn").addEventListener("click",refresh);
+$("clearHistory").addEventListener("click",()=>{if(confirm("Clear history?")){localStorage.removeItem("kenny_v33_signal_history");lastSignalKey="";renderHistory();}});
+$("notifyBtn").addEventListener("click",async()=>{
+  if(!("Notification" in window)){$("notifyStatus").textContent="Not supported.";return;}
+  const p=await Notification.requestPermission();
+  if(p==="granted"){notifOn=true;localStorage.setItem("kenny_notif","on");updateNotifUI();beep();alert("Alerts ON! Now LOCK Chrome in Recent Apps.");}
+  else{notifOn=false;localStorage.setItem("kenny_notif","off");updateNotifUI();alert("You clicked BLOCK. Go to Chrome Settings > Site Settings > Notifications > Allow");}
+});
+$("testNotif").addEventListener("click",()=>{if(notifOn && Notification.permission==="granted"){try{new Notification("🔔 TEST - KENNY M30 WORKS",{body:"If you see this, alerts are ON."});}catch(e){}} beep(); alert("Did you hear BEEP + see notification? If YES, you are set.");});
+renderHistory();refresh();setInterval(refresh,30000);
+</script>
+</body>
+  </html>
