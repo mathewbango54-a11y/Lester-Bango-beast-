@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>KENNY 👑 BTC ONLY V7 MUSTANG</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{margin:0;font-family:Arial;color:#fff;background:#000 url('https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd?w=1200&q=80') center/cover fixed}
+.overlay{background:rgba(0,0,0,0.85);min-height:100vh;padding:12px}
+.card{background:rgba(20,20,20,0.92);border:2px solid #FFD700;border-radius:14px;padding:14px;margin-bottom:10px}
+.gold{color:#FFD700}.green{color:#00ff88}.red{color:#ff4444}.yellow{color:#ffcc00}
+button{background:#FFD700;color:#000;border:none;padding:13px;width:100%;border-radius:10px;font-weight:900;font-size:15px;margin-top:6px;cursor:pointer}
+button.small{background:#333;color:#fff;padding:8px;font-size:13px}
+input,select{width:100%;padding:10px;margin:5px 0;border-radius:8px;border:none;box-sizing:border-box;background:#222;color:#fff}
+.sessionBox{padding:12px;border-radius:12px;text-align:center;font-weight:900;font-size:16px;margin-bottom:10px}
+.tradeLight{font-size:56px;text-align:center}
+.explain{background:#111;border-left:4px solid #FFD700;padding:10px;border-radius:8px;font-size:13px;line-height:1.6}
+.live{font-size:30px;font-weight:900}
+</style>
+</head>
+<body>
+<div class="overlay">
+<h2 class="gold">KENNY 👑 BTC ONLY V7 🐎</h2>
+<p>₿ BTC / USD - FOLLOW THE SYSTEM - 🔒 LOCKED</p>
+
+<div id="sessionBox" class="sessionBox">Checking Session...</div>
+<div class="explain">
+<b>📖 SESSION INDICATOR:</b><br>
+🟢 <b>GREEN = TRADE</b> - London 10am-2pm SA / New York 2pm-10pm SA. Big money in.<br>
+🔴 <b>RED = NO TRADE</b> - Asia 3am-10am SA / Off Hours 10pm-3am SA. Dead market, wide spread.<br>
+<b>Rule:</b> If RED, V7 BLOCKS trade even if signal is perfect.
+</div>
+
+<div class="card">
+<div class="live gold" id="price">Loading BTC...</div>
+<p id="apis">Connecting to 4 BTC APIs...</p>
+<p id="updated"></p>
+<button onclick="checkBTC()">🔄 CHECK NOW</button>
+</div>
+
+<div class="card">
+<b>📅 YESTERDAY RANGE vs TODAY</b>
+Y High <input id="yh" type="number" value="61622" onchange="calcRange()">
+Y Low <input id="yl" type="number" value="59915" onchange="calcRange()">
+<p id="range"></p><p id="zone"></p>
+<div class="explain"><b>Retest Rule:</b> Price broke BELOW Y Low $59,915? DON'T sell at bottom. WAIT for price to come BACK UP to $59,915 and get REJECTED. That retest = real entry. Same for break ABOVE Y High.</div>
+</div>
+
+<div class="card">
+<b>📊 3 TIMEFRAMES EMA 9/21 + ADX</b>
+<div class="explain"><b>How to check:</b> MT5 → BTCUSD → M15 chart → Add EMA 9 + EMA 21 + ADX. Price ABOVE both + EMA 9 above 21 = BUY. BELOW both = SELL. Mixed = WAIT. Do same for M30, H1.</div><br>
+M15 <select id="m15"><option>WAIT</option><option>BUY</option><option>SELL</option></select>
+M30 <select id="m30"><option>SELL</option><option>BUY</option><option>WAIT</option></select>
+H1 <select id="h1"><option>SELL</option><option>BUY</option><option>WAIT</option></select>
+ADX (H1) <input id="adx" type="number" value="28" placeholder="ADX >25 = Strong">
+<div class="explain"><b>ADX Filter:</b> ADX >25 = Strong trend, trade it. ADX <25 = Choppy, WAIT even if 3/3 says BUY/SELL.</div>
+<button onclick="getSignal()">🔍 KENNY CHECK + SIGNAL V7</button>
+<div id="tradeLight" class="tradeLight">⚪</div>
+<h3 id="signal" style="text-align:center">---</h3>
+<p id="plan" style="text-align:center"></p>
+<p id="strength" style="text-align:center"></p>
+<p id="v7note" style="text-align:center"></p>
+<div class="explain">
+<b>📖 BUY / SELL LIGHT:</b><br>
+🟢 <b>GREEN + BUY 3/3</b> = All 3 say BUY + ADX >25 + GREEN Session = TRADE BUY<br>
+🔴 <b>RED + SELL 3/3</b> = All 3 say SELL + ADX >25 + GREEN Session = TRADE SELL<br>
+🟡 <b>YELLOW + WAIT</b> = Only 2/3 or ADX weak or need Retest = DO NOT TRADE<br>
+⚪ <b>WHITE</b> = Press CHECK first
+</div>
+</div>
+
+<div class="card">
+<b>💰 ACCOUNT - SAVED</b>
+Balance R <input id="bal" type="number" value="200" onchange="saveData()">
+Losses: <b id="lossCount">0/2</b> | Wins: <b id="winCount">0</b><br><br>
+<button onclick="doWin()">✅ I WON +R20</button>
+<button class="small" onclick="doLoss()">❌ I LOST -R20</button>
+<button class="small" onclick="resetDay()">🔄 Reset Day</button>
+<p id="journal"></p>
+<div class="explain"><b>Smart Management V7:</b><br>1) <b>Break-Even:</b> When price moves halfway to Target (+$400), move Stop to Entry = Free trade<br>2) <b>Partial TP:</b> Close 50% at 1:1 ($59,412 if SELL from $59,812), let 50% run to full Target<br>3) <b>2 Losses = STOP TODAY</b></div>
+</div>
+
+<div class="card">
+<b>📖 KENNY BTC RULES V7</b>
+<p>1) Need 3/3 + ADX >25 + GREEN Session<br>2) 2/3 = WAIT for Retest<br>3) 2 Losses = STOP TODAY<br>4) Risk R20 ONLY | Target $800 / Stop $400<br>5) Trade for the Mustang 🐎 - Don't gamble</p>
+</div>
+
+<script>
+let btcPrice=0;
+let bal=parseFloat(localStorage.getItem('kenny_bal')||200);
+let wins=parseInt(localStorage.getItem('kenny_wins')||0);
+let losses=parseInt(localStorage.getItem('kenny_losses')||0);
+let journal=JSON.parse(localStorage.getItem('kenny_journal')||'[]');
+document.getElementById('bal').value=bal;
+function saveData(){localStorage.setItem('kenny_bal',document.getElementById('bal').value);localStorage.setItem('kenny_wins',wins);localStorage.setItem('kenny_losses',losses);localStorage.setItem('kenny_journal',JSON.stringify(journal));updateAccount();}
+function updateAccount(){document.getElementById('lossCount').innerText=losses+'/2';document.getElementById('winCount').innerText=wins;document.getElementById('journal').innerText='Last: '+(journal.length?journal.slice(-5).join(' | '):'None yet');if(losses>=2)document.getElementById('journal').innerHTML+='<br><b class="red">⛔ STOP TODAY</b>';}
+function doWin(){wins++;bal+=20;document.getElementById('bal').value=bal;journal.push('WIN +R20');saveData();alert('WIN! R'+bal);}
+function doLoss(){losses++;bal-=20;document.getElementById('bal').value=bal;journal.push('LOSS -R20');saveData();alert(losses>=2?'2 LOSSES - STOP TODAY R'+bal:'LOSS R'+bal);}
+function resetDay(){wins=0;losses=0;journal=[];saveData();alert('Day Reset');}
+function updateSession(){let h=new Date().getHours();let box=document.getElementById('sessionBox');if(h>=10&&h<14){box.style.background='#00ff88';box.style.color='#000';box.innerHTML='🟢 SESSION: LONDON (10am-2pm SA) - TRADE ALLOWED';}else if(h>=14&&h<22){box.style.background='#00ff88';box.style.color='#000';box.innerHTML='🟢 SESSION: NEW YORK (2pm-10pm SA) - TRADE ALLOWED';}else if(h>=3&&h<10){box.style.background='#ff4444';box.style.color='#fff';box.innerHTML='🔴 SESSION: ASIA (3am-10am SA) - NO TRADE';}else{box.style.background='#ff4444';box.style.color='#fff';box.innerHTML='🔴 SESSION: OFF HOURS (10pm-3am SA) - NO TRADE - GO SLEEP';}}
+function clean(p){p=parseFloat(p);if(!isFinite(p))return null;if(p<10000||p>200000)return null;return p;}
+function calcRange(){let yh=parseFloat(document.getElementById('yh').value)||0,yl=parseFloat(document.getElementById('yl').value)||0;if(!yh||!yl)return;let mid=(yh+yl)/2;document.getElementById('range').innerHTML='Range $'+(yh-yl).toFixed(2)+' | Res $'+yh+' | Sup $'+yl+' | Mid $'+mid.toFixed(2);if(btcPrice){let z='';if(btcPrice>yh-50)z='<b class="red">⚠️ AT RESISTANCE - WAIT FOR RETEST</b>';else if(btcPrice<yl+50)z='<b class="green">⚠️ AT / BELOW SUPPORT - WAIT FOR RETEST UP TO $'+yl+'</b>';else z='<b class="green">✅ SAFE ZONE</b>';document.getElementById('zone').innerHTML=z;}}
+async function checkBTC(){
+  let prices=[],logs=[];
+  document.getElementById('apis').innerHTML='Checking 4 BTC APIs...';
+  try{let r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');let j=await r.json();let p=clean(j.price);if(p){prices.push(p);logs.push('Binance $'+p.toFixed(2));}}catch(e){logs.push('Binance FAIL');}
+  try{let r=await fetch('https://api.coinbase.com/v2/prices/BTC-USD/spot');let j=await r.json();let p=clean(j.data?.amount);if(p){prices.push(p);logs.push('Coinbase $'+p.toFixed(2));}}catch(e){logs.push('Coinbase FAIL');}
+  try{let r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');let j=await r.json();let p=clean(j.bitcoin?.usd);if(p){prices.push(p);logs.push('CoinGecko $'+p.toFixed(2));}}catch(e){logs.push('CoinGecko FAIL');}
+  try{let r=await fetch('https://api.kraken.com/0/public/Ticker?pair=XBTUSD');let j=await r.json();let p=clean(j.result?.XXBTZUSD?.c?.[0]);if(p){prices.push(p);logs.push('Kraken $'+p.toFixed(2));}}catch(e){logs.push('Kraken FAIL');}
+  if(prices.length>=2){btcPrice=prices.reduce((a,b)=>a+b,0)/prices.length;document.getElementById('price').innerHTML='CONFIRMED: $'+btcPrice.toFixed(2)+' ✅';document.getElementById('apis').innerHTML=logs.join(' | ')+' | '+prices.length+'/4 CONFIRMED';document.getElementById('updated').innerText='Updated: '+new Date().toLocaleTimeString();calcRange();}else{document.getElementById('price').innerHTML='WAIT - APIs Down';document.getElementById('apis').innerHTML=logs.join(' | ');}
+}
+function getSignal(){
+  if(losses>=2){document.getElementById('tradeLight').innerText='⛔';document.getElementById('signal').innerHTML='<span class="red">⛔ STOP TODAY - 2 LOSSES</span>';return;}
+  let h=new Date().getHours();let isOff=(h>=22||h<10);
+  let a=[document.getElementById('m15').value,document.getElementById('m30').value,document.getElementById('h1').value];
+  let buys=a.filter(x=>x=='BUY').length,sells=a.filter(x=>x=='SELL').length;
+  let adx=parseFloat(document.getElementById('adx').value)||0;
+  let s=document.getElementById('signal'),p=document.getElementById('plan'),st=document.getElementById('strength'),light=document.getElementById('tradeLight'),note=document.getElementById('v7note');
+  if(!btcPrice){light.innerText='⚪';s.innerHTML='<span class="yellow">Press CHECK first!</span>';return;}
+  if(isOff){light.innerText='🔴';s.innerHTML='<span class="red">🔴 SESSION BLOCK - NO TRADE</span>';p.innerHTML='Session is RED. Your 11:41pm SELL would be BLOCKED by V7.';st.innerHTML='';note.innerHTML='Wait for London 10am SA tomorrow';return;}
+  if(adx<25){light.innerText='🟡';s.innerHTML='<span class="yellow">🟡 WAIT - ADX '+adx+' <25 CHOPPY</span>';p.innerHTML='Trend too weak.';return;}
+  if(buys>=3){light.innerText='🟢';s.innerHTML='<span class="green">🟢 BUY 3/3 PERFECT - TRADE</span>';p.innerHTML='<b>Entry $'+btcPrice.toFixed(2)+' | Target $'+(btcPrice+800).toFixed(2)+' | Stop $'+(btcPrice-400).toFixed(2)+'</b><br>Risk R20 | Close 50% at $'+(btcPrice+400).toFixed(2)+' | Move Stop to Entry at halfway';st.innerHTML='💪 3/3 + ADX Strong';note.innerHTML='✅ V7 PASSED ALL FILTERS';}
+  else if(sells>=3){light.innerText='🔴';s.innerHTML='<span class="red">🔴 SELL 3/3 PERFECT - TRADE</span>';p.innerHTML='<b>Entry $'+btcPrice.toFixed(2)+' | Target $'+(btcPrice-800).toFixed(2)+' | Stop $'+(btcPrice+400).toFixed(2)+'</b><br>Risk R20 | Close 50% at $'+(btcPrice-400).toFixed(2)+' | Move Stop to Entry at halfway';st.innerHTML='💪 3/3 + ADX Strong';note.innerHTML='✅ V7 PASSED ALL FILTERS';}
+  else if(buys==2||sells==2){light.innerText='🟡';s.innerHTML='<span class="yellow">🟡 WAIT - 2/3 ONLY - NEED RETEST</span>';p.innerHTML='V7 needs 3/3. Wait for 3rd timeframe OR wait for Retest of Y High/Low.';st.innerHTML='Need 3/3 for V7';note.innerHTML='Your last trade was 2/3 with M15 WAIT - V7 says WAIT';}
+  else{light.innerText='🟡';s.innerHTML='<span class="yellow">🟡 WAIT - DO NOT TRADE</span>';p.innerHTML='---';}
+}
+updateSession();updateAccount();calcRange();checkBTC();
+setInterval(checkBTC,30000);setInterval(updateSession,60000);
+</script>
+</div>
+</body>
+  </html>
